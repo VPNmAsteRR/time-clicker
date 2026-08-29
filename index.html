@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Destok VPN Кликер</title>
-    <!-- Telegram WebApp Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #0f1016);
-            --text-color: var(--tg-theme-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #707579);
-            --button-color: var(--tg-theme-button-color, #4facfe);
-            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #1a1c24);
+            --bg-color: #0b0c10;
+            --card-bg: #14161f;
+            --card-border: rgba(255, 255, 255, 0.06);
+            --text-main: #ffffff;
+            --text-muted: #8a919e;
+            --accent: #4facfe;
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
         * {
@@ -27,406 +27,421 @@
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Экран приветствия */
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0f1016 0%, #1a1c24 100%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            text-align: center;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        #welcome-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .welcome-logo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 0 40px rgba(79, 172, 254, 0.4);
-            margin-bottom: 24px;
-            animation: pulseGlow 2s infinite ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(79, 172, 254, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(79, 172, 254, 0.6); }
-        }
-
-        .welcome-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(45deg, #4facfe, #00f2fe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .welcome-desc {
-            font-size: 15px;
-            color: var(--hint-color);
-            line-height: 1.5;
-            margin-bottom: 35px;
-            max-width: 300px;
-        }
-
-        /* Контейнер */
         .app-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 90px;
+            padding: 16px;
+            padding-bottom: 100px;
         }
 
         .screen {
             display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.25s ease forwards;
         }
 
         .screen.active {
             display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
+        /* Приветствие и баннер */
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 14px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .info-card-text h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-card-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .info-card-icon {
+            font-size: 36px;
+            background: rgba(79, 172, 254, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        /* Табы сверху (как Stars / Premium / Ton) */
+        .top-tabs {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .top-tabs::-webkit-scrollbar { display: none; }
+
+        .top-tab {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .top-tab.active {
+            color: var(--text-main);
+        }
+
+        /* Поля ввода и блоки */
+        .input-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            width: 100%;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .input-box input {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            outline: none;
             width: 100%;
         }
 
-        .balance-card {
-            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.05));
-            border: 1px solid rgba(79, 172, 254, 0.3);
+        /* Чипсы (быстрый выбор) */
+        .chips-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .chip {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 10px 0;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:active, .chip.active {
+            border-color: var(--accent);
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        /* Большая кнопка кликера / действия */
+        .main-action-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 20px;
             width: 100%;
-            max-width: 320px;
-            box-shadow: 0 0 25px rgba(79, 172, 254, 0.15);
-            backdrop-filter: blur(10px);
-            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .balance-title {
-            font-size: 14px;
-            color: var(--hint-color);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .balance-value {
-            font-size: 36px;
-            font-weight: 800;
-            background: linear-gradient(45deg, #4facfe, #00f2fe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Кликер */
-        .clicker-circle {
-            width: 200px;
-            height: 200px;
+        .clicker-circle-ref {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background: var(--accent-gradient);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 40px rgba(79, 172, 254, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4);
-            transition: transform 0.1s ease, box-shadow 0.2s ease;
-            position: relative;
-            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.3);
+            margin: 15px 0;
+            transition: transform 0.1s ease;
         }
 
-        .clicker-circle:active {
+        .clicker-circle-ref:active {
             transform: scale(0.92);
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
         }
 
-        .clicker-circle .tap-text {
-            font-size: 26px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .clicker-circle .tap-sub {
-            font-size: 12px;
-            color: rgba(255,255,255,0.8);
-            margin-top: 4px;
-        }
-
-        .floating-number {
-            position: absolute;
-            font-size: 20px;
-            font-weight: bold;
-            color: #00f2fe;
-            pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
-        }
-
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
-        }
-
-        .shop-list, .profile-list {
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #0b0c10;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
             width: 100%;
-            max-width: 350px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:active {
+            opacity: 0.85;
+        }
+
+        /* Список карточек тарифов */
+        .tariffs-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            width: 100%;
         }
 
-        .card-item {
-            background: var(--secondary-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .tariff-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .card-item:hover {
-            border-color: rgba(79, 172, 254, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .card-info h3 {
+        .tariff-info h4 {
             font-size: 15px;
             margin-bottom: 4px;
         }
 
-        .card-info p {
+        .tariff-info p {
             font-size: 12px;
-            color: var(--hint-color);
+            color: var(--text-muted);
         }
 
-        .action-btn {
-            background: var(--button-color);
-            color: var(--button-text-color);
+        .tariff-btn {
+            background: rgba(79, 172, 254, 0.15);
+            color: var(--accent);
             border: none;
             border-radius: 10px;
-            padding: 10px 14px;
+            padding: 10px 16px;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
         }
 
-        .action-btn:active {
-            transform: scale(0.95);
-        }
-
-        .action-btn.secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            box-shadow: none;
-        }
-
-        .section-title {
-            font-size: 13px;
-            color: var(--hint-color);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            width: 100%;
-            max-width: 350px;
-            text-align: left;
-        }
-
-        /* Навигация */
+        /* Нижняя навигация в стиле референса */
         .nav-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 75px;
-            background: rgba(26, 28, 36, 0.85);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            bottom: 12px;
+            left: 16px;
+            right: 16px;
+            height: 68px;
+            background: #14161f;
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
             display: flex;
             justify-content: space-around;
             align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             z-index: 100;
         }
 
         .nav-item {
             background: none;
             border: none;
-            color: var(--hint-color);
+            color: var(--text-muted);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            font-size: 12px;
-            transition: color 0.2s ease;
+            font-size: 11px;
+            font-weight: 500;
             flex: 1;
+            transition: color 0.2s;
         }
 
         .nav-item svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: currentColor;
-            transition: transform 0.2s ease;
         }
 
         .nav-item.active {
-            color: #4facfe;
+            color: var(--accent);
         }
 
-        .nav-item.active svg {
-            transform: scale(1.1);
+        .floating-num {
+            position: absolute;
+            font-size: 18px;
+            font-weight: 700;
+            color: #00f2fe;
+            pointer-events: none;
+            animation: floatUpRef 0.7s ease-out forwards;
+        }
+
+        @keyframes floatUpRef {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.3); }
         }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН ПРИВЕТСТВИЯ -->
-    <div id="welcome-screen">
-        <div class="welcome-logo">⚡</div>
-        <h1 class="welcome-title">Destok VPN Кликер</h1>
-        <p class="welcome-desc">Добро пожаловать! Тапай Dcoin, копи баланс и обменивай на крутые тарифы VPN.</p>
-        <button class="action-btn" style="width: 100%; max-width: 260px; padding: 14px; font-size: 16px;" onclick="closeWelcome()">Начать работу</button>
-    </div>
-
     <div class="app-container">
-        <!-- ЭКРАН 1: КЛИКЕР -->
+        <!-- ЭКРАН 1: КЛИКЕР (Dcoin) -->
         <div id="screen-clicker" class="screen active">
-            <div class="header">
-                <h1 style="font-size: 22px; margin-bottom: 5px;">Destok VPN Кликер</h1>
-                <p style="color: var(--hint-color); font-size: 13px;">Тапай (+0.5 DC), копи коины</p>
+            <div class="greeting" id="user-greeting">Привет, друг!</div>
+
+            <div class="info-card">
+                <div class="info-card-text">
+                    <h3>Надёжность</h3>
+                    <p>Destok VPN — быстрое соединение и безопасный доступ 24/7 :)</p>
+                </div>
+                <div class="info-card-icon">⚡</div>
             </div>
 
-            <div class="balance-card">
-                <div class="balance-title">Твой баланс</div>
-                <div class="balance-value" id="coins-count">0.0</div>
-                <div style="font-size: 12px; color: var(--hint-color); margin-top: 5px;">Dcoin накопилось</div>
+            <div class="top-tabs">
+                <button class="top-tab active">Dcoin кликер</button>
             </div>
 
-            <div class="clicker-circle" id="clicker-btn">
-                <span class="tap-text">⚡ ТАП</span>
-                <span class="tap-sub">+0.5 DC</span>
+            <div class="input-label">ТВОЙ БАЛАНС</div>
+            <div class="input-box" style="justify-content: center; background: linear-gradient(135deg, rgba(79,172,254,0.08), rgba(0,242,254,0.03)); border-color: rgba(79,172,254,0.3);">
+                <span id="coins-display" style="font-size: 28px; font-weight: 800; color: #4facfe;">0.0 DC</span>
+            </div>
+
+            <div class="main-action-card">
+                <span style="font-size: 13px; color: var(--text-muted);">Тапай по центру, получай коины</span>
+                <div class="clicker-circle-ref" id="clicker-btn">
+                    <span style="font-size: 20px; font-weight: 800; color: #fff;">ТАП</span>
+                    <span style="font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 2px;">+0.5 DC</span>
+                </div>
             </div>
         </div>
 
-        <!-- ЭКРАН 2: МАГАЗИН (ТОЛЬКО DCOIN, ЦЕНЫ ОТ 1000) -->
-        <div id="screen-shop" class="screen">
-            <div class="header">
-                <h1 style="font-size: 22px; margin-bottom: 5px;">Магазин тарифов</h1>
-                <p style="color: var(--hint-color); font-size: 13px;">Обмен Dcoin на подписки VPN</p>
+        <!-- ЭКРАН 2: ТАРИФЫ (Магазин за коины от 1000) -->
+        <div id="screen-tariffs" class="screen">
+            <div class="greeting">Магазин тарифов</div>
+
+            <div class="top-tabs">
+                <button class="top-tab active">Обмен Dcoin</button>
             </div>
 
-            <div class="section-title">Доступные тарифы</div>
-            <div class="shop-list">
-                <div class="card-item">
-                    <div class="card-info">
-                        <h3>3 дня VPN</h3>
-                        <p>Цена: 1 000 DC</p>
+            <div class="input-label">ВЫБЕРИТЕ ПОДПИСКУ VPN</div>
+            
+            <div class="tariffs-list">
+                <div class="tariff-card">
+                    <div class="tariff-info">
+                        <h4>3 дня VPN</h4>
+                        <p>Цена: 1 000 Dcoin</p>
                     </div>
-                    <button class="action-btn" onclick="buyWithCoins(1000, 'VPN-3DAYS-PROMO')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(1000, 'VPN-3D')">Обменять</button>
                 </div>
-                <div class="card-item">
-                    <div class="card-info">
-                        <h3>7 дней VPN</h3>
-                        <p>Цена: 2 200 DC</p>
+                <div class="tariff-card">
+                    <div class="tariff-info">
+                        <h4>7 дней VPN</h4>
+                        <p>Цена: 2 200 Dcoin</p>
                     </div>
-                    <button class="action-btn" onclick="buyWithCoins(2200, 'VPN-7DAYS-PROMO')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(2200, 'VPN-7D')">Обменять</button>
                 </div>
-                <div class="card-item">
-                    <div class="card-info">
-                        <h3>30 дней VPN</h3>
-                        <p>Цена: 7 500 DC</p>
+                <div class="tariff-card">
+                    <div class="tariff-info">
+                        <h4>30 дней VPN</h4>
+                        <p>Цена: 7 500 Dcoin</p>
                     </div>
-                    <button class="action-btn" onclick="buyWithCoins(7500, 'VPN-30DAYS-PROMO')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(7500, 'VPN-30D')">Обменять</button>
                 </div>
-                <div class="card-item">
-                    <div class="card-info">
-                        <h3>90 дней VPN</h3>
-                        <p>Цена: 20 000 DC</p>
+                <div class="tariff-card">
+                    <div class="tariff-info">
+                        <h4>90 дней VPN</h4>
+                        <p>Цена: 20 000 Dcoin</p>
                     </div>
-                    <button class="action-btn" onclick="buyWithCoins(20000, 'VPN-90DAYS-PROMO')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(20000, 'VPN-90D')">Обменять</button>
                 </div>
             </div>
         </div>
 
         <!-- ЭКРАН 3: ПРОФИЛЬ -->
         <div id="screen-profile" class="screen">
-            <div class="header">
-                <h1 style="font-size: 22px; margin-bottom: 5px;">Личный кабинет</h1>
-                <p style="color: var(--hint-color); font-size: 13px;" id="user-name">Игрок</p>
+            <div class="greeting">Личный кабинет</div>
+
+            <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Статус подписки</span>
+                <div id="sub-status" style="font-size: 15px; font-weight: 600; color: #ff3b30;">Активна до: 15.09.2026</div>
             </div>
 
-            <div class="profile-list">
-                <div class="card-item" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                    <span style="font-size: 12px; color: var(--hint-color);">СТАТУС ПОДПИСКИ</span>
-                    <div id="sub-status" style="font-size: 15px; font-weight: 600; color: #ff3b30;">Активна до: 15.09.2026</div>
-                </div>
+            <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Ссылка подключения (Happ)</span>
+                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent);">vless://destok-sub-link-example#DestokVpn</div>
+                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 4px;" onclick="copyLink()">Скопировать ссылку</button>
+            </div>
 
-                <div class="card-item" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                    <span style="font-size: 12px; color: var(--hint-color);">ВАША ССЫЛКА ПОДКЛЮЧЕНИЯ (HAPP)</span>
-                    <div id="vpn-link" style="font-size: 13px; word-break: break-all; color: #4facfe;">vless://destok-sub-link-example#DestokVpn</div>
-                    <button class="action-btn secondary" style="width: 100%; margin-top: 5px;" onclick="copyVpnLink()">📋 Скопировать ссылку</button>
-                </div>
-
-                <div class="card-item" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                    <span style="font-size: 12px; color: var(--hint-color);">АКТИВНЫЕ ПРОМОКОДЫ</span>
-                    <div id="promo-history" style="font-size: 14px; font-weight: 500; color: var(--text-color);">Пока пусто</div>
-                </div>
+            <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Активированные промокоды</span>
+                <div id="promos-box" style="font-size: 13px; font-weight: 500;">Пока пусто</div>
             </div>
         </div>
     </div>
 
-    <!-- НАВИГАЦИЯ -->
+    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
     <nav class="nav-bar">
-        <button class="nav-item active" onclick="switchScreen('clicker', this)">
+        <button class="nav-item active" onclick="switchTab('clicker', this)">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.03-.42 1.98-1.07 2.75z"/></svg>
             Кликер
         </button>
-        <button class="nav-item" onclick="switchScreen('shop', this)">
+        <button class="nav-item" onclick="switchTab('tariffs', this)">
             <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            Магазин
+            Тарифы
         </button>
-        <button class="nav-item" onclick="switchScreen('profile', this)">
+        <button class="nav-item" onclick="switchTab('profile', this)">
             <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             Профиль
         </button>
@@ -436,115 +451,87 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function closeWelcome() {
-            document.getElementById('welcome-screen').classList.add('hidden');
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.notificationOccurred('success');
-            }
-        }
+        let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
+        let promos = JSON.parse(localStorage.getItem('destok_promos')) || [];
+        let vpnUrl = localStorage.getItem('destok_url') || 'vless://destok-sub-link-example#DestokVpn';
 
-        // Логика коинов (Dcoin)
-        let coins = parseFloat(localStorage.getItem('dc_coins')) || 0.0;
-        let promos = JSON.parse(localStorage.getItem('dc_promos')) || [];
-        
-        let subExpiry = localStorage.getItem('dc_sub_expiry') || '15.09.2026';
-        let vpnUrl = localStorage.getItem('dc_vpn_url') || 'vless://destok-sub-link-example#DestokVpn';
-
-        const coinsCountEl = document.getElementById('coins-count');
+        const coinsDisplay = document.getElementById('coins-display');
         const clickerBtn = document.getElementById('clicker-btn');
-        const promoHistoryEl = document.getElementById('promo-history');
-        const userNameEl = document.getElementById('user-name');
-        const subStatusEl = document.getElementById('sub-status');
+        const userGreeting = document.getElementById('user-greeting');
+        const promosBox = document.getElementById('promos-box');
         const vpnLinkEl = document.getElementById('vpn-link');
 
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            userNameEl.textContent = `@${tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name}`;
+            userGreeting.textContent = `Привет, ${tg.initDataUnsafe.user.first_name || 'друг'}!`;
         }
 
         updateUI();
 
-        // Клик: +0.5 Dcoin
+        // Клик по кругу
         clickerBtn.addEventListener('click', (e) => {
             coins += 0.5;
-            saveData();
+            save();
             updateUI();
 
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
             const rect = clickerBtn.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
             const num = document.createElement('div');
-            num.className = 'floating-number';
+            num.className = 'floating-num';
             num.textContent = '+0.5';
             num.style.left = `${x}px`;
             num.style.top = `${y}px`;
             clickerBtn.appendChild(num);
-
-            setTimeout(() => num.remove(), 800);
+            setTimeout(() => num.remove(), 700);
         });
 
-        // Покупка за Dcoin
-        function buyWithCoins(cost, promoCode) {
+        function buyTariff(cost, code) {
             if (coins >= cost) {
                 coins -= cost;
-                promos.push(promoCode);
-                saveData();
+                promos.push(code);
+                save();
                 updateUI();
-                
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                }
-                alert(`Успешно! Промокод активирован: ${promoCode}`);
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert(`Успешно! Промокод активирован: ${code}`);
             } else {
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('error');
-                }
-                alert('Не хватает Dcoin на балансе! Тапай дальше ⚡');
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                alert('Не хватает Dcoin на балансе! Тапай больше ⚡');
             }
         }
 
-        function copyVpnLink() {
+        function copyLink() {
             navigator.clipboard.writeText(vpnUrl).then(() => {
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('success');
-                }
-                alert('Ссылка подключения скопирована!');
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert('Ссылка скопирована!');
             });
         }
 
         function updateUI() {
-            coinsCountEl.textContent = coins.toFixed(1);
-            subStatusEl.textContent = `Активна до: ${subExpiry}`;
+            coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
             vpnLinkEl.textContent = vpnUrl;
-            
             if (promos.length > 0) {
-                promoHistoryEl.innerHTML = promos.map(p => `<div>🎁 ${p}</div>`).join('');
+                promosBox.innerHTML = promos.map(p => `<div>🎁 ${p}</div>`).join('');
             } else {
-                promoHistoryEl.innerHTML = 'Пока пусто';
+                promosBox.innerHTML = 'Пока пусто';
             }
         }
 
-        function saveData() {
-            localStorage.setItem('dc_coins', coins);
-            localStorage.setItem('dc_promos', JSON.stringify(promos));
-            localStorage.setItem('dc_sub_expiry', subExpiry);
-            localStorage.setItem('dc_vpn_url', vpnUrl);
+        function save() {
+            localStorage.setItem('destok_coins', coins);
+            localStorage.setItem('destok_promos', JSON.stringify(promos));
         }
 
-        function switchScreen(screenName, element) {
+        function switchTab(tabId, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-            document.getElementById(`screen-${screenName}`).classList.add('active');
-            element.classList.add('active');
+            document.getElementById(`screen-${tabId}`).classList.add('active');
+            el.classList.add('active');
 
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.selectionChanged();
-            }
+            if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
     </script>
 </body>
