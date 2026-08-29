@@ -34,6 +34,66 @@
             overflow: hidden;
         }
 
+        /* Экран приветствия (Welcome Overlay) */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f1016 0%, #1a1c24 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #welcome-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .welcome-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 0 40px rgba(79, 172, 254, 0.4);
+            margin-bottom: 24px;
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(79, 172, 254, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(79, 172, 254, 0.6); }
+        }
+
+        .welcome-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-desc {
+            font-size: 15px;
+            color: var(--hint-color);
+            line-height: 1.5;
+            margin-bottom: 35px;
+            max-width: 300px;
+        }
+
         /* Основной контейнер экранов */
         .app-container {
             flex: 1;
@@ -264,6 +324,14 @@
 </head>
 <body>
 
+    <!-- КРАСИВЫЙ ЭКРАН ПРИВЕТСТВИЯ -->
+    <div id="welcome-screen">
+        <div class="welcome-logo">⚡</div>
+        <h1 class="welcome-title">Destok VPN</h1>
+        <p class="welcome-desc">Добро пожаловать! Тапай секунды, обменивай их на подписку или активируй быстрый доступ.</p>
+        <button class="action-btn" style="width: 100%; max-width: 260px; padding: 14px; font-size: 16px;" onclick="closeWelcome()">Начать работу</button>
+    </div>
+
     <div class="app-container">
         <!-- ЭКРАН 1: КЛИКЕР -->
         <div id="screen-clicker" class="screen active">
@@ -317,7 +385,6 @@
                         <h3>30 дней VPN</h3>
                         <p>Быстрый доступ • 199 ₽</p>
                     </div>
-                    <!-- Ссылка на оплату YooMoney (замени на свою платежную ссылку или бота) -->
                     <a href="https://yoomoney.ru/to/41001XXXXXXXXX" target="_blank" class="action-btn" style="background: #8c52ff;">Купить ₽</a>
                 </div>
                 <div class="card-item">
@@ -356,12 +423,6 @@
                     <span style="font-size: 12px; color: var(--hint-color);">АКТИВНЫЕ ПРОМОКОДЫ</span>
                     <div id="promo-history" style="font-size: 14px; font-weight: 500; color: var(--text-color);">Пока пусто</div>
                 </div>
-
-                <!-- Быстрые ссылки на бота и канал -->
-                <div style="display: flex; gap: 10px; width: 100%; margin-top: 5px;">
-                    <a href="https://t.me/destok_vpnbot" target="_blank" class="action-btn" style="flex: 1; background: #2481cc;">Бот ТГ</a>
-                    <a href="https://t.me/Destok_Vpn" target="_blank" class="action-btn secondary" style="flex: 1;">Канал ТГ</a>
-                </div>
             </div>
         </div>
     </div>
@@ -386,11 +447,18 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Закрытие экрана приветствия
+        function closeWelcome() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred('success');
+            }
+        }
+
         // Данные игры и профиля
         let seconds = parseFloat(localStorage.getItem('tc_seconds')) || 0.0;
         let promos = JSON.parse(localStorage.getItem('tc_promos')) || [];
         
-        // Пример данных подписки (в будущем можно подтягивать из бэкенда бота)
         let subExpiry = localStorage.getItem('tc_sub_expiry') || '15.09.2026';
         let vpnUrl = localStorage.getItem('tc_vpn_url') || 'vless://destok-sub-link-example#DestokVpn';
 
