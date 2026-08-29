@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Time Clicker & VPN</title>
+    <title>Time Clicker & Promo</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -163,7 +163,7 @@
             box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
         }
 
-        /* Карточки и магазин VPN */
+        /* Карточки */
         .card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -177,6 +177,42 @@
 
         .card h3 { margin: 0 0 10px 0; color: #00ffcc; font-size: 18px; }
         .card p { margin: 5px 0; font-size: 14px; color: #b2bec3; }
+
+        /* Элементы промокодов и магазина */
+        .promo-box {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px dashed #00ffcc;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 18px;
+            color: #00ffcc;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .action-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            background: #7928ca;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
         .vpn-item {
             display: flex;
@@ -256,19 +292,28 @@
             <button class="tap-button" id="tap-btn">ТАП</button>
         </div>
 
-        <button class="withdraw-btn" id="withdraw-btn">📤 Вывести в промокод</button>
+        <button class="withdraw-btn" id="withdraw-btn">🎟 Создать промокод</button>
     </div>
 
-    <!-- ВКЛАДКА 2: ПРОФИЛЬ -->
+    <!-- ВКЛАДКА 2: ПРОФИЛЬ И ПРОМОКОДЫ -->
     <div id="tab-profile" class="tab-content">
         <div class="card">
             <h3>📊 Статистика</h3>
-            <p>Сила тапа: <b>+0.10 сек</b></p>
             <p>Всего кликов: <b id="p-clicks">0</b></p>
+            <p> Telegram ID: <b id="p-id">Не определен</b></p>
         </div>
-        <div class="card">
-            <h3>🆔 Аккаунт</h3>
-            <p>Telegram ID: <b id="p-id">Не определен</b></p>
+
+        <div class="card" style="text-align: center;">
+            <h3>🎟 Ваши промокоды</h3>
+            <div id="promo-container">
+                <p style="color: #636e72; font-size: 13px;">У вас пока нет активных кодов. Нафармите и создайте их в кликере!</p>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h3>📥 Активировать код</h3>
+            <input type="text" id="promo-input" class="action-input" placeholder="Введите промокод...">
+            <button class="action-btn" onclick="activatePromo()">Активировать</button>
         </div>
     </div>
 
@@ -323,6 +368,7 @@
 
         let score = parseFloat(localStorage.getItem('tc_score')) || 0.00;
         let totalClicks = parseInt(localStorage.getItem('tc_total_clicks')) || 0;
+        let userPromos = JSON.parse(localStorage.getItem('tc_promos')) || [];
 
         const scoreElement = document.getElementById('score');
         const tapButton = document.getElementById('tap-btn');
@@ -351,6 +397,7 @@
 
             if (tabName === 'profile') {
                 document.getElementById('p-clicks').textContent = totalClicks;
+                renderPromos();
             }
         }
 
@@ -358,7 +405,6 @@
             score = Math.round((score + 0.10) * 100) / 100;
             totalClicks++;
             scoreElement.textContent = score.toFixed(2);
-
             saveData();
 
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -378,28 +424,7 @@
             setTimeout(() => floatEl.remove(), 700);
         }
 
-        // Покупка VPN тарифа
-        function buyVpn(tariffName, price) {
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                // Отправляем боту запрос на покупку конкретного тарифа
-                tg.sendData(JSON.stringify({
-                    action: "buy_vpn",
-                    tariff: tariffName,
-                    price: price,
-                    user_id: tg.initDataUnsafe.user.id
-                }));
-            } else {
-                alert(`[ТЕСТ БРАУЗЕРА] Запрос на покупку тарифа "${tariffName}" за ${price} руб.`);
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('tc_score', score);
-            localStorage.setItem('tc_total_clicks', totalClicks);
-        }
-
+        // Генерация промокода прямо в приложении
         function generatePromo() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let code = 'TIME';
@@ -412,7 +437,7 @@
 
         withdrawBtn.addEventListener('click', () => {
             if (score < 1.00) {
-                alert("Минимум для вывода — 1.00 секунда!");
+                alert("Минимум для создания промокода — 1.00 секунда!");
                 return;
             }
             
@@ -421,21 +446,67 @@
             let promoCode = generatePromo();
             let withdrawnScore = score;
 
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                tg.sendData(JSON.stringify({
-                    action: "create_promo",
-                    code: promoCode,
-                    amount: withdrawnScore,
-                    user_id: tg.initDataUnsafe.user.id
-                }));
-            } else {
-                alert(`[ТЕСТ] Выведено: ${withdrawnScore.toFixed(2)} сек.\nПромокод: ${promoCode}`);
-            }
-
+            // Сохраняем промокод локально в память устройства
+            userPromos.push({ code: promoCode, amount: withdrawnScore });
+            
             score = 0.00;
             scoreElement.textContent = score.toFixed(2);
             saveData();
+
+            alert(`Успешно! Ваш промокод на ${withdrawnScore.toFixed(2)} сек создан:\n${promoCode}\n\nОн сохранен во вкладке «Профиль».`);
+            switchTab('profile', document.querySelectorAll('.nav-item')[1]);
         });
+
+        // Отображение промокодов в профиле
+        function renderPromos() {
+            const container = document.getElementById('promo-container');
+            if (userPromos.length === 0) {
+                container.innerHTML = `<p style="color: #636e72; font-size: 13px;">У вас пока нет активных кодов.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            userPromos.forEach((item, index) => {
+                container.innerHTML += `
+                    <div style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <p style="font-size: 12px; margin: 0 0 4px 0; color: #00ffcc;">${item.amount.toFixed(2)} секунд</p>
+                        <div class="promo-box" style="margin-bottom: 5px; font-size: 15px; padding: 6px;">${item.code}</div>
+                        <button class="action-btn" style="padding: 6px; font-size: 12px;" onclick="copyCode('${item.code}')">📋 Скопировать</button>
+                    </div>
+                `;
+            });
+        }
+
+        // Копирование в буфер обмена
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert("Промокод скопирован в буфер обмена!");
+            });
+        }
+
+        // Активация промокода (заглушка логики)
+        function activatePromo() {
+            let inputVal = document.getElementById('promo-input').value.trim();
+            if (!inputVal) {
+                alert("Введите промокод!");
+                return;
+            }
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            alert(`Промокод "${inputVal}" успешно активирован! (Здесь будет начисление бонуса)`);
+            document.getElementById('promo-input').value = '';
+        }
+
+        function buyVpn(tariffName, price) {
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            alert(`[VPN Shop] Переход к оплате тарифа "${tariffName}" за ${price} руб.`);
+        }
+
+        function saveData() {
+            localStorage.setItem('tc_score', score);
+            localStorage.setItem('tc_total_clicks', totalClicks);
+            localStorage.setItem('tc_promos', JSON.stringify(userPromos));
+        }
     </script>
 </body>
 </html>
