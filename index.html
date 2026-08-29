@@ -3,509 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Time Clicker & Promo</title>
+    <title>Time Clicker</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #0f1016);
+            --text-color: var(--tg-theme-text-color, #ffffff);
+            --hint-color: var(--tg-theme-hint-color, #707579);
+            --button-color: var(--tg-theme-button-color, #4facfe);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #1a1c24);
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
             -webkit-user-select: none;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle at center, #1b143f 0%, #090618 100%);
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
             overflow: hidden;
-            touch-action: manipulation;
         }
 
-        /* Шапка профиля */
-        .header-bar {
-            width: 100%;
-            padding: 15px 20px 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 6px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff007f, #7928ca);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .username {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* Контент вкладок */
-        .tab-content {
-            display: none;
+        /* Основной контейнер экранов */
+        .app-container {
             flex: 1;
-            width: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .screen.active {
+            display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Шапка */
+        .header {
             text-align: center;
-            overflow-y: auto;
-        }
-
-        .tab-content.active {
-            display: flex;
-        }
-
-        /* Кликер */
-        .score-container {
-            font-size: 52px;
-            font-weight: 900;
-            color: #00ffcc;
-            text-shadow: 0 0 25px rgba(0, 255, 204, 0.5);
-            margin-bottom: 5px;
-        }
-
-        .score-label {
-            font-size: 12px;
-            color: #8c7ae6;
-            text-transform: uppercase;
-            letter-spacing: 3px;
             margin-bottom: 30px;
         }
 
-        .clicker-area {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
+        .balance-card {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.05));
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 0 25px rgba(79, 172, 254, 0.15);
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
         }
 
-        .tap-button {
-            width: 220px;
-            height: 220px;
+        .balance-title {
+            font-size: 14px;
+            color: var(--hint-color);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .balance-value {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Кликер элемент */
+        .clicker-circle {
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background: radial-gradient(circle, #7928ca 0%, #4300b0 100%);
-            border: 4px solid rgba(0, 255, 204, 0.4);
-            box-shadow: 0 0 40px rgba(121, 40, 202, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 34px;
-            font-weight: 900;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: transform 0.08s ease, box-shadow 0.08s ease;
-            outline: none;
+            box-shadow: 0 0 40px rgba(79, 172, 254, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.4);
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            position: relative;
+            margin: 20px 0;
         }
 
-        .tap-button:active {
+        .clicker-circle:active {
             transform: scale(0.92);
-            box-shadow: 0 0 20px rgba(121, 40, 202, 0.8);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
         }
 
-        .floating-text {
-            position: absolute;
-            color: #00ffcc;
+        .clicker-circle span {
+            font-size: 28px;
             font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Анимация летящих цифр при клике */
+        .floating-number {
+            position: absolute;
             font-size: 20px;
+            font-weight: bold;
+            color: #00f2fe;
             pointer-events: none;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
-            animation: floatUp 0.7s ease-out forwards;
+            animation: floatUp 0.8s ease-out forwards;
         }
 
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.3); }
         }
 
-        .withdraw-btn {
+        /* Карточки в магазине и профиле */
+        .shop-list, .profile-list {
             width: 100%;
-            max-width: 280px;
-            padding: 12px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #00ffcc, #00b894);
-            border: none;
-            color: #090618;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* Карточки */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .card-item {
+            background: var(--secondary-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 15px;
-            text-align: left;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .card h3 { margin: 0 0 10px 0; color: #00ffcc; font-size: 18px; }
-        .card p { margin: 5px 0; font-size: 14px; color: #b2bec3; }
-
-        /* Элементы промокодов и магазина */
-        .promo-box {
-            background: rgba(0, 255, 204, 0.1);
-            border: 1px dashed #00ffcc;
-            padding: 12px;
-            border-radius: 10px;
-            font-family: monospace;
-            font-size: 18px;
-            color: #00ffcc;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+        .card-item:hover {
+            border-color: rgba(79, 172, 254, 0.4);
+            transform: translateY(-2px);
         }
 
-        .action-input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            font-size: 14px;
-            margin-bottom: 10px;
-            outline: none;
+        .card-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .card-info p {
+            font-size: 13px;
+            color: var(--hint-color);
         }
 
         .action-btn {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            background: #7928ca;
-            color: white;
+            background: var(--button-color);
+            color: var(--button-text-color);
             border: none;
-            font-weight: bold;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
         }
 
-        .vpn-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            width: 100%;
-            max-width: 320px;
+        .action-btn:active {
+            transform: scale(0.95);
         }
 
-        .buy-vpn-btn {
-            background: linear-gradient(135deg, #ff007f, #7928ca);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(255, 0, 127, 0.4);
+        .action-btn:disabled {
+            background: var(--hint-color);
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
-        /* Нижнее меню */
+        /* Нижняя навигация */
         .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            background: rgba(9, 6, 24, 0.9);
+            height: 75px;
+            background: rgba(26, 28, 36, 0.85);
             backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            flex-shrink: 0;
+            align-items: center;
+            z-index: 100;
         }
 
         .nav-item {
             background: none;
             border: none;
-            color: #636e72;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
+            color: var(--hint-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            transition: color 0.2s;
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s ease;
+            flex: 1;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
         }
 
         .nav-item.active {
-            color: #00ffcc;
+            color: #4facfe;
         }
 
-        .nav-item span.icon {
-            font-size: 20px;
+        .nav-item.active svg {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
-    <!-- Шапка -->
-    <div class="header-bar">
-        <div class="profile-container">
-            <div class="avatar" id="user-avatar">👤</div>
-            <span class="username" id="username">Игрок</span>
-        </div>
-    </div>
+    <div class="app-container">
+        <div id="screen-clicker" class="screen active">
+            <div class="header">
+                <h1 style="font-size: 22px; margin-bottom: 5px;">Time Clicker</h1>
+                <p style="color: var(--hint-color); font-size: 13px;">Тапай, копи секунды и забирай VPN</p>
+            </div>
 
-    <!-- ВКЛАДКА 1: КЛИКЕР -->
-    <div id="tab-clicker" class="tab-content active">
-        <div class="score-container" id="score">0.00</div>
-        <div class="score-label">нафармлено секунд</div>
+            <div class="balance-card">
+                <div class="balance-title">Твой баланс</div>
+                <div class="balance-value" id="seconds-count">0.0</div>
+                <div style="font-size: 12px; color: var(--hint-color); margin-top: 5px;">секунд накопилось</div>
+            </div>
 
-        <div class="clicker-area" id="clicker-area">
-            <button class="tap-button" id="tap-btn">ТАП</button>
-        </div>
-
-        <button class="withdraw-btn" id="withdraw-btn">🎟 Создать промокод</button>
-    </div>
-
-    <!-- ВКЛАДКА 2: ПРОФИЛЬ И ПРОМОКОДЫ -->
-    <div id="tab-profile" class="tab-content">
-        <div class="card">
-            <h3>📊 Статистика</h3>
-            <p>Всего кликов: <b id="p-clicks">0</b></p>
-            <p> Telegram ID: <b id="p-id">Не определен</b></p>
-        </div>
-
-        <div class="card" style="text-align: center;">
-            <h3>🎟 Ваши промокоды</h3>
-            <div id="promo-container">
-                <p style="color: #636e72; font-size: 13px;">У вас пока нет активных кодов. Нафармите и создайте их в кликере!</p>
+            <div class="clicker-circle" id="clicker-btn">
+                <span>⚡ ТАП</span>
             </div>
         </div>
 
-        <div class="card" style="text-align: center;">
-            <h3>📥 Активировать код</h3>
-            <input type="text" id="promo-input" class="action-input" placeholder="Введите промокод...">
-            <button class="action-btn" onclick="activatePromo()">Активировать</button>
+        <div id="screen-shop" class="screen">
+            <div class="header">
+                <h1 style="font-size: 22px; margin-bottom: 5px;">Магазин VPN</h1>
+                <p style="color: var(--hint-color); font-size: 13px;">Обменивай секунды на подписку</p>
+            </div>
+
+            <div class="shop-list">
+                <div class="card-item">
+                    <div class="card-info">
+                        <h3>1 день VPN</h3>
+                        <p>Стоимость: 300 сек</p>
+                    </div>
+                    <button class="action-btn" onclick="buyItem(300, 'VPN-1DAY-XXXX')">Взять</button>
+                </div>
+                <div class="card-item">
+                    <div class="card-info">
+                        <h3>7 дней VPN</h3>
+                        <p>Стоимость: 1800 сек</p>
+                    </div>
+                    <button class="action-btn" onclick="buyItem(1800, 'VPN-7DAYS-YYYY')">Взять</button>
+                </div>
+                <div class="card-item">
+                    <div class="card-info">
+                        <h3>30 дней VPN</h3>
+                        <p>Стоимость: 7000 сек</p>
+                    </div>
+                    <button class="action-btn" onclick="buyItem(7000, 'VPN-30DAYS-ZZZZ')">Взять</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-profile" class="screen">
+            <div class="header">
+                <h1 style="font-size: 22px; margin-bottom: 5px;">Профиль</h1>
+                <p style="color: var(--hint-color); font-size: 13px;" id="user-name">Игрок</p>
+            </div>
+
+            <div class="profile-list">
+                <div class="card-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <span style="font-size: 13px; color: var(--hint-color);">Твои купленные промокоды:</span>
+                    <div id="promo-history" style="font-size: 14px; font-weight: 500; color: #4facfe;">Пока пусто</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ВКЛАДКА 3: МАГАЗИН VPN -->
-    <div id="tab-vpn" class="tab-content">
-        <div class="card" style="text-align: center; margin-bottom: 15px;">
-            <h3>🛡️ Destok VPN</h3>
-            <p style="font-size: 12px;">Быстрый и безопасный доступ в интернет</p>
-        </div>
-
-        <div class="vpn-item">
-            <div style="text-align: left;">
-                <strong>1 месяц</strong>
-                <p style="margin:2px 0 0 0; font-size:11px; color:#00ffcc;">150 руб.</p>
-            </div>
-            <button class="buy-vpn-btn" onclick="buyVpn('1 месяц', 150)">Купить</button>
-        </div>
-
-        <div class="vpn-item">
-            <div style="text-align: left;">
-                <strong>3 месяца</strong>
-                <p style="margin:2px 0 0 0; font-size:11px; color:#00ffcc;">400 руб. (-10%)</p>
-            </div>
-            <button class="buy-vpn-btn" onclick="buyVpn('3 месяца', 400)">Купить</button>
-        </div>
-
-        <div class="vpn-item">
-            <div style="text-align: left;">
-                <strong>1 год (Безлимит)</strong>
-                <p style="margin:2px 0 0 0; font-size:11px; color:#00ffcc;">1200 руб. (-30%)</p>
-            </div>
-            <button class="buy-vpn-btn" onclick="buyVpn('1 год', 1200)">Купить</button>
-        </div>
-    </div>
-
-    <!-- Нижняя навигация -->
-    <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('clicker', this)">
-            <span class="icon">⚡</span>Кликер
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="switchScreen('clicker', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.03-.42 1.98-1.07 2.75z"/></svg>
+            Кликер
         </button>
-        <button class="nav-item" onclick="switchTab('profile', this)">
-            <span class="icon">👤</span>Профиль
+        <button class="nav-item" onclick="switchScreen('shop', this)">
+            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            Магазин
         </button>
-        <button class="nav-item" onclick="switchTab('vpn', this)">
-            <span class="icon">🛡️</span>VPN
+        <button class="nav-item" onclick="switchScreen('profile', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Профиль
         </button>
-    </div>
+    </nav>
 
     <script>
-        let tg = window.Telegram.WebApp;
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let score = parseFloat(localStorage.getItem('tc_score')) || 0.00;
-        let totalClicks = parseInt(localStorage.getItem('tc_total_clicks')) || 0;
-        let userPromos = JSON.parse(localStorage.getItem('tc_promos')) || [];
+        // Данные игры
+        let seconds = parseFloat(localStorage.getItem('tc_seconds')) || 0.0;
+        let promos = JSON.parse(localStorage.getItem('tc_promos')) || [];
 
-        const scoreElement = document.getElementById('score');
-        const tapButton = document.getElementById('tap-btn');
-        const clickerArea = document.getElementById('clicker-area');
-        const withdrawBtn = document.getElementById('withdraw-btn');
+        const secondsCountEl = document.getElementById('seconds-count');
+        const clickerBtn = document.getElementById('clicker-btn');
+        const promoHistoryEl = document.getElementById('promo-history');
+        const userNameEl = document.getElementById('user-name');
 
-        scoreElement.textContent = score.toFixed(2);
-
+        // Имя пользователя из Телеграма
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            document.getElementById('username').textContent = user.first_name;
-            document.getElementById('p-id').textContent = user.id;
-            if (user.photo_url) {
-                document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}">`;
+            userNameEl.textContent = `@${tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name}`;
+        }
+
+        updateUI();
+
+        // Клик по кнопке
+        clickerBtn.addEventListener('click', (e) => {
+            seconds += 1.0;
+            saveData();
+            updateUI();
+
+            // Вибрация (если поддерживается)
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+
+            // Анимация всплывающей циферки
+            const rect = clickerBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const num = document.createElement('div');
+            num.className = 'floating-number';
+            num.textContent = '+1';
+            num.style.left = `${x}px`;
+            num.style.top = `${y}px`;
+            clickerBtn.appendChild(num);
+
+            setTimeout(() => num.remove(), 800);
+        });
+
+        // Покупка товара
+        function buyItem(cost, promoCode) {
+            if (seconds >= cost) {
+                seconds -= cost;
+                promos.push(promoCode);
+                saveData();
+                updateUI();
+                
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+                alert(`Успешно! Ваш промокод: ${promoCode}`);
             } else {
-                document.getElementById('user-avatar').textContent = user.first_name.charAt(0);
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('error');
+                }
+                alert('Не хватает секунд на балансе!');
             }
         }
 
-        function switchTab(tabName, btnElement) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-            document.getElementById('tab-' + tabName).classList.add('active');
-            btnElement.classList.add('active');
-
-            if (tabName === 'profile') {
-                document.getElementById('p-clicks').textContent = totalClicks;
-                renderPromos();
-            }
-        }
-
-        tapButton.addEventListener('click', (event) => {
-            score = Math.round((score + 0.10) * 100) / 100;
-            totalClicks++;
-            scoreElement.textContent = score.toFixed(2);
-            saveData();
-
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            createFloatingText(event, '+0.10с');
-        });
-
-        function createFloatingText(event, text) {
-            const floatEl = document.createElement('div');
-            floatEl.className = 'floating-text';
-            floatEl.textContent = text;
-
-            const rect = tapButton.getBoundingClientRect();
-            floatEl.style.left = `${event.clientX - rect.left - 20}px`;
-            floatEl.style.top = `${event.clientY - rect.top - 20}px`;
-
-            clickerArea.appendChild(floatEl);
-            setTimeout(() => floatEl.remove(), 700);
-        }
-
-        // Генерация промокода прямо в приложении
-        function generatePromo() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = 'TIME';
-            for (let i = 0; i < 8; i++) {
-                if (i === 4) code += '-';
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
-
-        withdrawBtn.addEventListener('click', () => {
-            if (score < 1.00) {
-                alert("Минимум для создания промокода — 1.00 секунда!");
-                return;
-            }
+        // Обновление интерфейса
+        function updateUI() {
+            secondsCountEl.textContent = seconds.toFixed(1);
             
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-
-            let promoCode = generatePromo();
-            let withdrawnScore = score;
-
-            // Сохраняем промокод локально в память устройства
-            userPromos.push({ code: promoCode, amount: withdrawnScore });
-            
-            score = 0.00;
-            scoreElement.textContent = score.toFixed(2);
-            saveData();
-
-            alert(`Успешно! Ваш промокод на ${withdrawnScore.toFixed(2)} сек создан:\n${promoCode}\n\nОн сохранен во вкладке «Профиль».`);
-            switchTab('profile', document.querySelectorAll('.nav-item')[1]);
-        });
-
-        // Отображение промокодов в профиле
-        function renderPromos() {
-            const container = document.getElementById('promo-container');
-            if (userPromos.length === 0) {
-                container.innerHTML = `<p style="color: #636e72; font-size: 13px;">У вас пока нет активных кодов.</p>`;
-                return;
+            if (promos.length > 0) {
+                promoHistoryEl.innerHTML = promos.map(p => `<div>🎁 ${p}</div>`).join('');
+            } else {
+                promoHistoryEl.innerHTML = 'Пока пусто';
             }
-
-            container.innerHTML = '';
-            userPromos.forEach((item, index) => {
-                container.innerHTML += `
-                    <div style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <p style="font-size: 12px; margin: 0 0 4px 0; color: #00ffcc;">${item.amount.toFixed(2)} секунд</p>
-                        <div class="promo-box" style="margin-bottom: 5px; font-size: 15px; padding: 6px;">${item.code}</div>
-                        <button class="action-btn" style="padding: 6px; font-size: 12px;" onclick="copyCode('${item.code}')">📋 Скопировать</button>
-                    </div>
-                `;
-            });
         }
 
-        // Копирование в буфер обмена
-        function copyCode(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                alert("Промокод скопирован в буфер обмена!");
-            });
-        }
-
-        // Активация промокода (заглушка логики)
-        function activatePromo() {
-            let inputVal = document.getElementById('promo-input').value.trim();
-            if (!inputVal) {
-                alert("Введите промокод!");
-                return;
-            }
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            alert(`Промокод "${inputVal}" успешно активирован! (Здесь будет начисление бонуса)`);
-            document.getElementById('promo-input').value = '';
-        }
-
-        function buyVpn(tariffName, price) {
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            alert(`[VPN Shop] Переход к оплате тарифа "${tariffName}" за ${price} руб.`);
-        }
-
+        // Сохранение в память телефона
         function saveData() {
-            localStorage.setItem('tc_score', score);
-            localStorage.setItem('tc_total_clicks', totalClicks);
-            localStorage.setItem('tc_promos', JSON.stringify(userPromos));
+            localStorage.setItem('tc_seconds', seconds);
+            localStorage.setItem('tc_promos', JSON.stringify(promos));
+        }
+
+        // Переключение экранов
+        function switchScreen(screenName, element) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(`screen-${screenName}`).classList.add('active');
+            element.classList.add('active');
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.selectionChanged();
+            }
         }
     </script>
 </body>
