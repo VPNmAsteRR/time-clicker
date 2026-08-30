@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-color: #08090d;
-            --card-bg: rgba(20, 24, 35, 0.7);
+            --card-bg: rgba(20, 24, 35, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: #8a919e;
@@ -43,22 +43,22 @@
             overflow-y: auto;
             padding: 16px;
             padding-bottom: 110px;
+            scroll-behavior: smooth;
         }
 
         .screen {
             display: none;
             flex-direction: column;
             align-items: center;
-            animation: fadeIn 0.25s ease forwards;
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .screen.active {
             display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
         .greeting {
@@ -68,12 +68,14 @@
             text-align: left;
             margin-bottom: 14px;
             letter-spacing: -0.5px;
+            transition: all 0.3s ease;
         }
 
         .info-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 20px;
             padding: 16px;
             width: 100%;
@@ -81,6 +83,12 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .info-card:hover {
+            border-color: rgba(0, 242, 254, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
         }
 
         .info-card-text h3 {
@@ -109,6 +117,11 @@
             flex-shrink: 0;
             margin-left: 12px;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .info-card-icon:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .top-tabs {
@@ -138,7 +151,7 @@
         }
 
         .balance-card {
-            background: rgba(15, 20, 32, 0.8);
+            background: rgba(15, 20, 32, 0.85);
             border: 1px solid rgba(0, 242, 254, 0.25);
             border-radius: 20px;
             padding: 16px;
@@ -149,6 +162,7 @@
             gap: 10px;
             margin-bottom: 16px;
             box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05), 0 8px 25px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
         }
 
         .balance-value {
@@ -158,12 +172,18 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .balance-value.bump {
+            transform: scale(1.12);
         }
 
         .main-action-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 24px;
             padding: 24px 20px;
             width: 100%;
@@ -187,14 +207,15 @@
             height: 140px;
             border-radius: 50%;
             background: var(--accent-gradient);
-            filter: blur(28px);
-            opacity: 0.6;
-            animation: pulseGlow 2.5s infinite alternate ease-in-out;
+            filter: blur(32px);
+            opacity: 0.55;
+            animation: pulseGlow 3s infinite alternate ease-in-out;
+            transition: opacity 0.3s ease;
         }
 
         @keyframes pulseGlow {
-            0% { transform: scale(0.9); opacity: 0.4; }
-            100% { transform: scale(1.15); opacity: 0.75; }
+            0% { transform: scale(0.9); opacity: 0.35; }
+            100% { transform: scale(1.2); opacity: 0.7; }
         }
 
         .clicker-circle-ref {
@@ -209,24 +230,32 @@
             cursor: pointer;
             position: relative;
             z-index: 2;
-            transition: transform 0.08s cubic-bezier(0,0,0.2,1);
+            transition: transform 0.1s cubic-bezier(0.3, 0, 0.2, 1), box-shadow 0.2s ease;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
         }
 
         .clicker-circle-ref::before {
             content: '';
             position: absolute;
-            top: 5px;
+            top: 4px;
             width: 120px;
             height: 60px;
             border-radius: 60px 60px 0 0;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0));
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0));
             pointer-events: none;
         }
 
         .clicker-circle-ref:active {
-            transform: scale(0.92);
+            transform: scale(0.9);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Анимация блокировки/антиклик */
+        .clicker-circle-ref.locked {
+            filter: grayscale(0.8);
+            pointer-events: none;
+            transform: scale(0.95);
         }
 
         .btn-primary {
@@ -241,6 +270,11 @@
             cursor: pointer;
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
         }
 
         .tariffs-list {
@@ -258,6 +292,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .tariff-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 242, 254, 0.25);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .tariff-info h4 {
@@ -279,9 +320,19 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* УЛЬТРАПЛАВНЫЙ СТЕКЛЯННЫЙ НАВБАР С ГРАДИЕНТНЫМ БОРДЕРОМ */
+        .tariff-btn:hover {
+            background: rgba(0, 242, 254, 0.22);
+            transform: scale(1.05);
+        }
+
+        .tariff-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* УЛЬТРАПЛАВНЫЙ СТЕКЛЯННЫЙ НАВБАР */
         .nav-bar {
             position: fixed;
             bottom: 16px;
@@ -319,7 +370,7 @@
             flex: 1;
             height: 56px;
             border-radius: 28px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
         }
 
@@ -327,19 +378,19 @@
             width: 22px;
             height: 22px;
             fill: currentColor;
-            transition: fill 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: fill 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .nav-item.active {
-            background: rgba(0, 242, 254, 0.08);
-            border: 1px solid rgba(0, 242, 254, 0.25);
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid rgba(0, 242, 254, 0.3);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2), inset 0 1px 2px rgba(255,255,255,0.25);
         }
 
         .nav-item.active svg {
             fill: var(--accent-cyan);
-            transform: translateY(-2px) scale(1.05);
+            transform: translateY(-2px) scale(1.1);
         }
 
         /* АНИМАЦИЯ ЦИФР И ИСКОР */
@@ -377,9 +428,52 @@
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
         }
+
+        /* ОКНО АНТИКЛИКЕР ПРЕДУПРЕЖДЕНИЯ */
+        .anti-clicker-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 59, 48, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4);
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .anti-clicker-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .anti-clicker-toast.shake {
+            animation: shakeToast 0.4s ease-in-out;
+        }
+
+        @keyframes shakeToast {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            20%, 60% { transform: translateX(-52%) translateY(0); }
+            40%, 80% { transform: translateX(-48%) translateY(0); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- ВСПЛЫВАЮЩЕЕ ПРЕДУПРЕЖДЕНИЕ АНТИКЛИКЕРА -->
+    <div id="anti-clicker-toast" class="anti-clicker-toast">
+        Ай-ай-ай, так не честно, выключай! 😡
+    </div>
 
     <div class="app-container">
         <!-- ЭКРАН 1: КЛИКЕР -->
@@ -399,7 +493,7 @@
             </div>
 
             <div class="input-label">ТВОЙ БАЛАНС</div>
-            <div class="balance-card">
+            <div class="balance-card" id="balance-card">
                 <span style="font-size: 24px;">⚡</span>
                 <span id="coins-display" class="balance-value">0.0 DC</span>
             </div>
@@ -408,7 +502,7 @@
                 <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Тапай по центру, получай коины</span>
                 
                 <div class="clicker-container">
-                    <div class="clicker-glow"></div>
+                    <div class="clicker-glow" id="clicker-glow"></div>
                     <div class="clicker-circle-ref" id="clicker-btn">
                         <span style="font-size: 26px; font-weight: 900; color: #fff; pointer-events: none; letter-spacing: 1px;">ТАП</span>
                         <span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); margin-top: 2px; pointer-events: none;">+0.5 DC</span>
@@ -506,10 +600,13 @@
         let vpnUrl = localStorage.getItem('destok_url') || 'vless://destok-sub-link-example#DestokVpn';
 
         const coinsDisplay = document.getElementById('coins-display');
+        const balanceCard = document.getElementById('balance-card');
         const clickerBtn = document.getElementById('clicker-btn');
+        const clickerGlow = document.getElementById('clicker-glow');
         const userGreeting = document.getElementById('user-greeting');
         const promosBox = document.getElementById('promos-box');
         const vpnLinkEl = document.getElementById('vpn-link');
+        const toastEl = document.getElementById('anti-clicker-toast');
 
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             userGreeting.textContent = `Привет, ${tg.initDataUnsafe.user.first_name || 'друг'}! 👋`;
@@ -517,10 +614,32 @@
 
         updateUI();
 
+        // Переменные для антикликера (защита от > 4 кликов в секунду)
+        let clickTimestamps = [];
+        let isAntiClickerLocked = false;
+        let toastTimeout = null;
+
         clickerBtn.addEventListener('click', (e) => {
+            if (isAntiClickerLocked) return;
+
+            const now = Date.now();
+            // Оставляем только клики за последнюю 1 секунду (1000 мс)
+            clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 1000);
+            clickTimestamps.push(now);
+
+            // Если за последнюю секунду совершено больше 4 кликов — срабатывает защита
+            if (clickTimestamps.length > 4) {
+                triggerAntiClickerProtection();
+                return;
+            }
+
             coins += 0.5;
             save();
             updateUI();
+
+            // Эффект увеличения баланса при тапе
+            coinsDisplay.classList.add('bump');
+            setTimeout(() => coinsDisplay.classList.remove('bump'), 200);
 
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
@@ -528,6 +647,7 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
+            // Вылетающая цифра
             const num = document.createElement('div');
             num.className = 'floating-num';
             num.textContent = '+0.5';
@@ -536,6 +656,7 @@
             clickerBtn.appendChild(num);
             setTimeout(() => num.remove(), 750);
 
+            // Искорки
             for(let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
@@ -552,6 +673,28 @@
             }
         });
 
+        function triggerAntiClickerProtection() {
+            isAntiClickerLocked = true;
+            clickerBtn.classList.add('locked');
+            clickerGlow.style.opacity = '0.1';
+
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+
+            // Показываем плашку
+            toastEl.classList.add('show', 'shake');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+
+            // Через 1.5 секунды снимаем блокировку
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show', 'shake');
+                clickerBtn.classList.remove('locked');
+                clickerGlow.style.opacity = '0.55';
+                isAntiClickerLocked = false;
+                clickTimestamps = [];
+            }, 1800);
+        }
+
         function buyTariff(cost, code) {
             if (coins >= cost) {
                 coins -= cost;
@@ -567,6 +710,7 @@
         }
 
         function copyLink() {
+            navigator.clipboard.writeText(vpnUrl).text?.then(() => {}) ;
             navigator.clipboard.writeText(vpnUrl).then(() => {
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                 alert('Ссылка скопирована!');
