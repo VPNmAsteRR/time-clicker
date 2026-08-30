@@ -300,8 +300,8 @@
 
     document.getElementById('greeting').textContent = `Привет, ${firstName}! 👋`;
 
-    // ==================== API ====================
-    const API_URL = 'http://185.204.53.140';
+    // ==================== API (HTTPS через Cloudflare) ====================
+    const API_URL = 'https://lit-rejected-palm-decorative.trycloudflare.com';
 
     // ==================== ДАННЫЕ ====================
     let coins = parseFloat(localStorage.getItem('destok_coins')) || 0;
