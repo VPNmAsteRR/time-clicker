@@ -71,6 +71,40 @@
             letter-spacing: -0.5px;
         }
 
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 16px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .info-card .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .info-card .value {
+            font-size: 14px;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .info-card .value.active {
+            color: #00f2fe;
+        }
+
+        .info-card .value.inactive {
+            color: #ff3b30;
+        }
+
         .balance-card {
             background: rgba(15, 20, 32, 0.85);
             border: 1px solid rgba(0, 242, 254, 0.25);
@@ -168,6 +202,21 @@
             cursor: pointer;
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
+            margin-top: 8px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 8px;
         }
 
         .tariffs-list {
@@ -185,6 +234,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+
+        .tariff-card.test {
+            border-color: rgba(0, 242, 254, 0.4);
         }
 
         .tariff-info h4 {
@@ -291,6 +344,17 @@
                 <span id="coins-display" class="balance-value">0.0 DC</span>
             </div>
 
+            <div class="info-card">
+                <div class="label">Статус подписки</div>
+                <div class="value" id="sub-status">Загрузка...</div>
+            </div>
+
+            <div class="info-card">
+                <div class="label">Твоя ссылка</div>
+                <div class="value" id="vpn-link" style="font-size: 11px; color: var(--accent-cyan);">Загрузка...</div>
+                <button class="btn-secondary" onclick="copyLink()">📋 Скопировать ссылку</button>
+            </div>
+
             <div class="main-action-card">
                 <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Тапай по центру, зарабатывай Dcoin</span>
                 
@@ -304,15 +368,15 @@
             </div>
         </div>
 
-        <!-- ЭКРАН 2: ТАРИФЫ (ТЕСТОВЫЙ) -->
+        <!-- ЭКРАН 2: ТАРИФЫ -->
         <div id="screen-tariffs" class="screen">
             <div class="greeting">Магазин подписок</div>
 
-            <div class="input-label" style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: left; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.8px;">ОБМЕН DCOIN НА VPN ДОСТУП</div>
+            <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: left; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.8px;">ОБМЕН DCOIN НА VPN ДОСТУП</div>
             
             <div class="tariffs-list">
                 <!-- ТЕСТОВЫЙ ТАРИФ ЗА 10 МОНЕТ -->
-                <div class="tariff-card" style="border-color: rgba(0, 242, 254, 0.4);">
+                <div class="tariff-card test">
                     <div class="tariff-info">
                         <h4>🧪 ТЕСТ: 1 день VPN</h4>
                         <p>Цена: 10 Dcoin (тестовый)</p>
@@ -347,7 +411,7 @@
         </div>
     </div>
 
-    <!-- НАВБАР (только Кликер и Тарифы) -->
+    <!-- НАВБАР -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab('clicker', this)">
             <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
@@ -363,34 +427,59 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ========== ИСПОЛЬЗУЕМ ОТНОСИТЕЛЬНЫЙ ПУТЬ (БЕЗ ДОМЕНА) ==========
-        const API_URL = '';
-
         const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
         const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
 
         document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
 
         let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
+        let vpnUrl = localStorage.getItem('destok_vpn_url') || "Не куплена";
+        let subStatusText = localStorage.getItem('destok_sub_status') || "Загрузка...";
 
         const coinsDisplay = document.getElementById('coins-display');
         const clickerBtn = document.getElementById('clicker-btn');
+        const vpnLinkEl = document.getElementById('vpn-link');
+        const subStatusEl = document.getElementById('sub-status');
 
         updateUI();
 
-        // ========== ПОЛУЧАЕМ БАЛАНС ИЗ БОТА ==========
+        // ========== ПОЛУЧАЕМ ДАННЫЕ ИЗ БОТА ==========
         if (userId) {
             fetch(`/api/user?user_id=${userId}`)
                 .then(res => res.json())
                 .then(res => {
-                    if (res.success && res.data && res.data.coins !== undefined) {
-                        coins = res.data.coins;
-                        localStorage.setItem('destok_coins', coins);
+                    if (res.success && res.data) {
+                        const data = res.data;
+                        
+                        // Ссылка
+                        if (data.sub_url && data.sub_url !== "Не куплена") {
+                            vpnUrl = data.sub_url;
+                            localStorage.setItem('destok_vpn_url', vpnUrl);
+                        }
+                        
+                        // Статус подписки
+                        if (data.is_active) {
+                            subStatusText = `🟢 Активна до: ${data.expire_date || 'скоро'}`;
+                        } else if (data.is_banned) {
+                            subStatusText = "⛔ Заблокирован";
+                        } else {
+                            subStatusText = "🔴 Истекла / Не активна";
+                        }
+                        localStorage.setItem('destok_sub_status', subStatusText);
+                        
+                        // Монеты
+                        if (data.coins !== undefined) {
+                            coins = data.coins;
+                            localStorage.setItem('destok_coins', coins);
+                        }
+                        
                         updateUI();
                     }
                 })
                 .catch(err => {
-                    console.log("⚠️ API недоступно, используем локальный баланс:", err);
+                    console.log("⚠️ API недоступно:", err);
+                    subStatusText = "🔄 Проверьте статус в боте (/profile)";
+                    updateUI();
                 });
         }
 
@@ -417,7 +506,7 @@
             clickerBtn.appendChild(num);
             setTimeout(() => num.remove(), 750);
 
-            // Сохраняем баланс на сервере (каждые 5 кликов)
+            // Сохраняем баланс на сервере
             if (userId && Math.floor(coins * 10) % 5 === 0) {
                 fetch(`/api/coins/update`, {
                     method: 'POST',
@@ -465,9 +554,35 @@
             }
         }
 
+        // ========== КОПИРОВАНИЕ ССЫЛКИ ==========
+        function copyLink() {
+            if (vpnUrl === "Не куплена" || vpnUrl === "Загрузка...") {
+                alert('❌ У вас еще нет активной ссылки. Купите тариф или проверьте статус в боте.');
+                return;
+            }
+            navigator.clipboard.writeText(vpnUrl).then(() => {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert('✅ Ссылка подписки скопирована!');
+            }).catch(() => {
+                prompt("Скопируйте вашу ссылку вручную:", vpnUrl);
+            });
+        }
+
         // ========== ОБНОВЛЕНИЕ UI ==========
         function updateUI() {
             coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
+            vpnLinkEl.textContent = vpnUrl;
+            subStatusEl.textContent = subStatusText;
+            
+            if (subStatusText.includes('🟢')) {
+                subStatusEl.style.color = '#00f2fe';
+            } else if (subStatusText.includes('⛔')) {
+                subStatusEl.style.color = '#ff3b30';
+            } else if (subStatusText.includes('🔄')) {
+                subStatusEl.style.color = '#ff9500';
+            } else {
+                subStatusEl.style.color = '#ff3b30';
+            }
         }
 
         // ========== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ==========
