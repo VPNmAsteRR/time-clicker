@@ -24,6 +24,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -51,14 +52,14 @@
             flex-direction: column;
             align-items: center;
             opacity: 0;
-            transform: translateY(12px) scale(0.98);
-            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(10px);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .screen.active {
             display: flex;
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
 
         .greeting {
@@ -68,7 +69,6 @@
             text-align: left;
             margin-bottom: 14px;
             letter-spacing: -0.5px;
-            transition: all 0.3s ease;
         }
 
         .info-card {
@@ -83,12 +83,13 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .info-card:hover {
-            border-color: rgba(0, 242, 254, 0.2);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 242, 254, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .info-card-text h3 {
@@ -118,10 +119,6 @@
             margin-left: 12px;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .info-card-icon:hover {
-            transform: scale(1.1) rotate(5deg);
         }
 
         .top-tabs {
@@ -162,7 +159,7 @@
             gap: 10px;
             margin-bottom: 16px;
             box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05), 0 8px 25px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .balance-value {
@@ -172,7 +169,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .balance-value.bump {
@@ -191,6 +188,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .clicker-container {
@@ -210,7 +208,7 @@
             filter: blur(32px);
             opacity: 0.55;
             animation: pulseGlow 3s infinite alternate ease-in-out;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
         }
 
         @keyframes pulseGlow {
@@ -230,8 +228,7 @@
             cursor: pointer;
             position: relative;
             z-index: 2;
-            transition: transform 0.1s cubic-bezier(0.3, 0, 0.2, 1), box-shadow 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 1), box-shadow 0.2s ease, filter 0.3s ease;
             box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
         }
 
@@ -247,15 +244,13 @@
         }
 
         .clicker-circle-ref:active {
-            transform: scale(0.9);
-            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            transform: scale(0.92);
         }
 
-        /* Анимация блокировки/антиклик */
         .clicker-circle-ref.locked {
             filter: grayscale(0.8);
             pointer-events: none;
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .btn-primary {
@@ -270,7 +265,7 @@
             cursor: pointer;
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
         }
 
         .btn-primary:active {
@@ -292,7 +287,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .tariff-card:hover {
@@ -320,7 +315,7 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .tariff-btn:hover {
@@ -332,7 +327,7 @@
             transform: scale(0.95);
         }
 
-        /* УЛЬТРАПЛАВНЫЙ СТЕКЛЯННЫЙ НАВБАР */
+        /* ИСПРАВЛЕННЫЙ ПЛАВНЫЙ СТЕКЛЯННЫЙ НАВБАР */
         .nav-bar {
             position: fixed;
             bottom: 16px;
@@ -341,7 +336,7 @@
             width: 90%;
             max-width: 400px;
             height: 72px;
-            background: rgba(12, 16, 24, 0.75);
+            background: rgba(12, 16, 24, 0.8);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -352,7 +347,6 @@
             padding: 0 8px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
             z-index: 100;
-            transition: all 0.3s ease;
         }
 
         .nav-item {
@@ -370,7 +364,7 @@
             flex: 1;
             height: 56px;
             border-radius: 28px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
         }
 
@@ -378,7 +372,7 @@
             width: 22px;
             height: 22px;
             fill: currentColor;
-            transition: fill 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .nav-item.active {
@@ -386,6 +380,7 @@
             border: 1px solid rgba(0, 242, 254, 0.3);
             color: #fff;
             box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2), inset 0 1px 2px rgba(255,255,255,0.25);
+            transform: scale(1.02);
         }
 
         .nav-item.active svg {
@@ -393,7 +388,7 @@
             transform: translateY(-2px) scale(1.1);
         }
 
-        /* АНИМАЦИЯ ЦИФР И ИСКОР */
+        /* АНИМАЦИИ ЦИФР И ИСКОР */
         .floating-num {
             position: absolute;
             font-size: 20px;
@@ -429,7 +424,7 @@
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
         }
 
-        /* ОКНО АНТИКЛИКЕР ПРЕДУПРЕЖДЕНИЯ */
+        /* ТОАСТ АНТИКЛИКЕРА */
         .anti-clicker-toast {
             position: fixed;
             top: 20px;
@@ -470,7 +465,6 @@
 </head>
 <body>
 
-    <!-- ВСПЛЫВАЮЩЕЕ ПРЕДУПРЕЖДЕНИЕ АНТИКЛИКЕРА -->
     <div id="anti-clicker-toast" class="anti-clicker-toast">
         Ай-ай-ай, так не честно, выключай! 😡
     </div>
@@ -493,7 +487,7 @@
             </div>
 
             <div class="input-label">ТВОЙ БАЛАНС</div>
-            <div class="balance-card" id="balance-card">
+            <div class="balance-card">
                 <span style="font-size: 24px;">⚡</span>
                 <span id="coins-display" class="balance-value">0.0 DC</span>
             </div>
@@ -600,7 +594,6 @@
         let vpnUrl = localStorage.getItem('destok_url') || 'vless://destok-sub-link-example#DestokVpn';
 
         const coinsDisplay = document.getElementById('coins-display');
-        const balanceCard = document.getElementById('balance-card');
         const clickerBtn = document.getElementById('clicker-btn');
         const clickerGlow = document.getElementById('clicker-glow');
         const userGreeting = document.getElementById('user-greeting');
@@ -614,7 +607,7 @@
 
         updateUI();
 
-        // Переменные для антикликера (защита от > 4 кликов в секунду)
+        // Защита от автокликера: лимит 7 кликов за 500 миллисекунд
         let clickTimestamps = [];
         let isAntiClickerLocked = false;
         let toastTimeout = null;
@@ -623,12 +616,10 @@
             if (isAntiClickerLocked) return;
 
             const now = Date.now();
-            // Оставляем только клики за последнюю 1 секунду (1000 мс)
-            clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 1000);
+            clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 500);
             clickTimestamps.push(now);
 
-            // Если за последнюю секунду совершено больше 4 кликов — срабатывает защита
-            if (clickTimestamps.length > 4) {
+            if (clickTimestamps.length > 7) {
                 triggerAntiClickerProtection();
                 return;
             }
@@ -637,7 +628,6 @@
             save();
             updateUI();
 
-            // Эффект увеличения баланса при тапе
             coinsDisplay.classList.add('bump');
             setTimeout(() => coinsDisplay.classList.remove('bump'), 200);
 
@@ -647,7 +637,6 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // Вылетающая цифра
             const num = document.createElement('div');
             num.className = 'floating-num';
             num.textContent = '+0.5';
@@ -656,7 +645,6 @@
             clickerBtn.appendChild(num);
             setTimeout(() => num.remove(), 750);
 
-            // Искорки
             for(let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
@@ -680,12 +668,10 @@
 
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
 
-            // Показываем плашку
             toastEl.classList.add('show', 'shake');
             
             if (toastTimeout) clearTimeout(toastTimeout);
 
-            // Через 1.5 секунды снимаем блокировку
             toastTimeout = setTimeout(() => {
                 toastEl.classList.remove('show', 'shake');
                 clickerBtn.classList.remove('locked');
@@ -710,7 +696,6 @@
         }
 
         function copyLink() {
-            navigator.clipboard.writeText(vpnUrl).text?.then(() => {}) ;
             navigator.clipboard.writeText(vpnUrl).then(() => {
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                 alert('Ссылка скопирована!');
