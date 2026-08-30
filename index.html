@@ -83,13 +83,6 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .info-card:hover {
-            border-color: rgba(0, 242, 254, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .info-card-text h3 {
@@ -117,7 +110,6 @@
             justify-content: center;
             flex-shrink: 0;
             margin-left: 12px;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
         }
 
         .top-tabs {
@@ -157,7 +149,6 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 16px;
-            box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05), 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .balance-value {
@@ -224,18 +215,12 @@
             cursor: pointer;
             position: relative;
             z-index: 2;
-            transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 1), box-shadow 0.2s ease, filter 0.3s ease;
+            transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 1);
             box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
         }
 
         .clicker-circle-ref:active {
             transform: scale(0.92);
-        }
-
-        .clicker-circle-ref.locked {
-            filter: grayscale(0.8);
-            pointer-events: none;
-            transform: scale(0.96);
         }
 
         .btn-primary {
@@ -250,11 +235,6 @@
             cursor: pointer;
             text-align: center;
             box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.96);
         }
 
         .tariffs-list {
@@ -272,13 +252,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .tariff-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 242, 254, 0.25);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .tariff-info h4 {
@@ -300,12 +273,6 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .tariff-btn:hover {
-            background: rgba(0, 242, 254, 0.22);
-            transform: scale(1.05);
         }
 
         .nav-bar {
@@ -318,7 +285,6 @@
             height: 72px;
             background: rgba(12, 16, 24, 0.8);
             backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 36px;
             display: flex;
@@ -344,26 +310,23 @@
             flex: 1;
             height: 56px;
             border-radius: 28px;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s ease;
         }
 
         .nav-item svg {
             width: 22px;
             height: 22px;
             fill: currentColor;
-            transition: all 0.35s ease;
         }
 
         .nav-item.active {
             background: rgba(0, 242, 254, 0.1);
             border: 1px solid rgba(0, 242, 254, 0.3);
             color: #fff;
-            transform: scale(1.02);
         }
 
         .nav-item.active svg {
             fill: var(--accent-cyan);
-            transform: translateY(-2px) scale(1.1);
         }
 
         .floating-num {
@@ -372,47 +335,21 @@
             font-weight: 900;
             color: #ffffff;
             pointer-events: none;
-            animation: floatUpRef 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            animation: floatUpRef 0.75s ease-out forwards;
             text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
             z-index: 10;
         }
 
         @keyframes floatUpRef {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
-            50% { opacity: 1; transform: translate(-50%, -90px) scale(1.2); }
             100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
-        }
-
-        .anti-clicker-toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: rgba(255, 59, 48, 0.9);
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 13px;
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .anti-clicker-toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <div id="anti-clicker-toast" class="anti-clicker-toast">
-        Ай-ай-ай, слишком быстро! Передышка 😡
-    </div>
-
     <div class="app-container">
+        <!-- ЭКРАН 1: КЛИКЕР -->
         <div id="screen-clicker" class="screen active">
             <div class="greeting" id="user-greeting">Привет, друг! 👋</div>
 
@@ -424,7 +361,7 @@
                 <div class="info-card-icon">⚡</div>
             </div>
 
-            <div class="input-label">ТВОЙ БАЛАНС</div>
+            <div class="input-label">ТВОЙ БАЛАНС DCOIN</div>
             <div class="balance-card">
                 <span style="font-size: 24px;">⚡</span>
                 <span id="coins-display" class="balance-value">0.0 DC</span>
@@ -434,7 +371,7 @@
                 <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Тапай по центру, зарабатывай Dcoin</span>
                 
                 <div class="clicker-container">
-                    <div class="clicker-glow" id="clicker-glow"></div>
+                    <div class="clicker-glow"></div>
                     <div class="clicker-circle-ref" id="clicker-btn">
                         <span style="font-size: 26px; font-weight: 900; color: #fff;">ТАП</span>
                         <span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); margin-top: 2px;">+0.5 DC</span>
@@ -443,6 +380,7 @@
             </div>
         </div>
 
+        <!-- ЭКРАН 2: ТАРИФЫ -->
         <div id="screen-tariffs" class="screen">
             <div class="greeting">Магазин подписок</div>
 
@@ -470,32 +408,27 @@
                     </div>
                     <button class="tariff-btn" onclick="buyTariff(7500, '30D')">Обменять</button>
                 </div>
-                <div class="tariff-card">
-                    <div class="tariff-info">
-                        <h4>90 дней VPN</h4>
-                        <p>Цена: 20 000 Dcoin</p>
-                    </div>
-                    <button class="tariff-btn" onclick="buyTariff(20000, '90D')">Обменять</button>
-                </div>
             </div>
         </div>
 
+        <!-- ЭКРАН 3: ПРОФИЛЬ -->
         <div id="screen-profile" class="screen">
             <div class="greeting">Личный кабинет</div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки</span>
-                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #ff3b30;">Не активна</div>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки (из базы бота)</span>
+                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #ff3b30;">Загрузка...</div>
             </div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Ссылка подключения</span>
-                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent-cyan); font-weight: 600;">Не куплена</div>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Основная ссылка подключения</span>
+                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent-cyan); font-weight: 600;">Загрузка...</div>
                 <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 6px;" onclick="copyLink()">Скопировать ссылку</button>
             </div>
         </div>
     </div>
 
+    <!-- НАВБАР -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab('clicker', this)">
             <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
@@ -515,54 +448,49 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Получаем Telegram ID пользователя
+        const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+        const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
+
+        document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
+
         let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
-        let vpnUrl = localStorage.getItem('destok_url') || 'Не куплена';
-        let subStatusText = localStorage.getItem('destok_status') || 'Не активна';
+        let vpnUrl = "Не куплена";
+        let subStatusText = "Не активна";
 
         const coinsDisplay = document.getElementById('coins-display');
         const clickerBtn = document.getElementById('clicker-btn');
-        const clickerGlow = document.getElementById('clicker-glow');
-        const userGreeting = document.getElementById('user-greeting');
         const vpnLinkEl = document.getElementById('vpn-link');
         const subStatusEl = document.getElementById('sub-status');
-        const toastEl = document.getElementById('anti-clicker-toast');
-
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            userGreeting.textContent = `Привет, ${tg.initDataUnsafe.user.first_name || 'друг'}! 👋`;
-        }
 
         updateUI();
 
-        let clickTimestamps = [];
-        let isAntiClickerLocked = false;
+        // 🔥 ЗАПРОС К ДАННЫМ ИЗ БАЗЫ БОТА (порт 8000)
+        if (userId) {
+            // Замени IP_ТВОЕГО_СЕРВЕРА на реальный IP, где запущен бот
+            fetch(`http://IP_ТВОЕГО_СЕРВЕРА:8000/api/user?user_id=${userId}`)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success && res.data) {
+                        const data = res.data;
+                        if (data.sub_url) {
+                            vpnUrl = data.sub_url;
+                        }
+                        if (data.is_active) {
+                            subStatusText = `Активна до: ${new Date(data.expire_date).toLocaleDateString()}`;
+                        } else {
+                            subStatusText = "Истекла / Не активна";
+                        }
+                        updateUI();
+                    }
+                })
+                .catch(err => console.log("Ошибка загрузки данных из базы бота:", err));
+        }
 
+        // Кликер
         clickerBtn.addEventListener('click', (e) => {
-            if (isAntiClickerLocked) return;
-
-            const now = Date.now();
-            clickTimestamps = clickTimestamps.filter(timestamp => now - timestamp < 500);
-            clickTimestamps.push(now);
-
-            // Порог: 7 кликов за 500мс
-            if (clickTimestamps.length > 7) {
-                isAntiClickerLocked = true;
-                clickerBtn.classList.add('locked');
-                clickerGlow.style.opacity = '0.1';
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-                toastEl.classList.add('show');
-                
-                setTimeout(() => {
-                    toastEl.classList.remove('show');
-                    clickerBtn.classList.remove('locked');
-                    clickerGlow.style.opacity = '0.55';
-                    isAntiClickerLocked = false;
-                    clickTimestamps = [];
-                }, 1800);
-                return;
-            }
-
             coins += 0.5;
-            save();
+            localStorage.setItem('destok_coins', coins);
             updateUI();
 
             coinsDisplay.classList.add('bump');
@@ -586,18 +514,17 @@
         function buyTariff(cost, durationCode) {
             if (coins >= cost) {
                 coins -= cost;
-                save();
+                localStorage.setItem('destok_coins', coins);
                 updateUI();
                 
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                 
-                // Отправляем запрос боту на создание ключа через API панели
                 if (tg.sendData) {
                     tg.sendData(`buy:${durationCode}`);
-                    alert('Запрос на генерацию подписки отправлен боту! Закройте миниапп и проверьте чат с ботом.');
+                    alert('Запрос отправлен боту! Проверьте чат.');
                     tg.close();
                 } else {
-                    alert('Успешно куплено! (Запуск вне Telegram)');
+                    alert('Успешно куплено!');
                 }
             } else {
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
@@ -606,8 +533,8 @@
         }
 
         function copyLink() {
-            if (vpnUrl === 'Не куплена') {
-                alert('У вас еще нет ссылки. Купите подписку в разделе Тарифы!');
+            if (vpnUrl === "Не куплена") {
+                alert('У вас еще нет активной ссылки.');
                 return;
             }
             navigator.clipboard.writeText(vpnUrl).then(() => {
@@ -620,13 +547,7 @@
             coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
             vpnLinkEl.textContent = vpnUrl;
             subStatusEl.textContent = subStatusText;
-            subStatusEl.style.color = subStatusText === 'Активна' ? '#00f2fe' : '#ff3b30';
-        }
-
-        function save() {
-            localStorage.setItem('destok_coins', coins);
-            localStorage.setItem('destok_url', vpnUrl);
-            localStorage.setItem('destok_status', subStatusText);
+            subStatusEl.style.color = subStatusText.includes("Активна") ? '#00f2fe' : '#ff3b30';
         }
 
         function switchTab(tabId, el) {
