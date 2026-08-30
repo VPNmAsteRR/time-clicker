@@ -196,7 +196,6 @@
             0% { opacity: 1; transform: translate(-50%, -50%) scale(0.7); }
             100% { opacity: 0; transform: translate(-50%, -120px) scale(1.1); }
         }
-        .status-text { font-size: 13px; margin-top: 4px; }
         .section-label {
             font-size: 11px;
             color: #6a6f7a;
@@ -213,26 +212,22 @@
 
 <div class="app-container">
 
-    <!-- ====== ЭКРАН КЛИКЕР ====== -->
+    <!-- КЛИКЕР -->
     <div id="screen-clicker" class="screen active">
         <div class="greeting" id="greeting">Привет, друг! 👋</div>
-
         <div class="balance-card">
             <span style="font-size:22px;">⚡</span>
             <span class="balance-value" id="coinsDisplay">0.0 DC</span>
         </div>
-
         <div class="info-card">
             <div class="label">📌 Статус подписки</div>
             <div class="value" id="statusDisplay">Загрузка...</div>
         </div>
-
         <div class="info-card">
             <div class="label">🔗 Твоя ссылка</div>
             <div class="value" id="linkDisplay" style="font-size:12px;color:#00f2fe;">Загрузка...</div>
             <button class="btn-secondary" onclick="copyLink()">📋 Скопировать</button>
         </div>
-
         <div class="main-action-card">
             <span style="font-size:13px;color:#6a6f7a;font-weight:500;">Тапай по центру 👆</span>
             <div class="clicker-container">
@@ -245,11 +240,10 @@
         </div>
     </div>
 
-    <!-- ====== ЭКРАН ТАРИФЫ ====== -->
+    <!-- ТАРИФЫ -->
     <div id="screen-tariffs" class="screen">
         <div class="greeting">🛒 Магазин</div>
         <div class="section-label">Обмен Dcoin на VPN</div>
-
         <div class="tariffs-list">
             <div class="tariff-card test">
                 <div class="tariff-info">
@@ -284,7 +278,7 @@
 
 </div>
 
-<!-- ====== НАВИГАЦИЯ ====== -->
+<!-- НАВИГАЦИЯ -->
 <nav class="nav-bar">
     <button class="nav-item active" onclick="switchTab('clicker', this)">
         <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
@@ -297,9 +291,6 @@
 </nav>
 
 <script>
-    // ============================================================
-    // 1. Telegram WebApp
-    // ============================================================
     const tg = window.Telegram.WebApp;
     tg.expand();
 
@@ -309,14 +300,10 @@
 
     document.getElementById('greeting').textContent = `Привет, ${firstName}! 👋`;
 
-    // ============================================================
-    // 2. API
-    // ============================================================
+    // ==================== API ====================
     const API_URL = 'http://185.204.53.140';
 
-    // ============================================================
-    // 3. Данные
-    // ============================================================
+    // ==================== ДАННЫЕ ====================
     let coins = parseFloat(localStorage.getItem('destok_coins')) || 0;
     let vpnLink = localStorage.getItem('destok_vpn_url') || 'Не куплена';
     let statusText = localStorage.getItem('destok_sub_status') || 'Загрузка...';
@@ -326,12 +313,10 @@
     const linkEl = document.getElementById('linkDisplay');
     const clickerBtn = document.getElementById('clickerBtn');
 
-    // ============================================================
-    // 4. Получение данных с сервера
-    // ============================================================
+    // ==================== ЗАГРУЗКА ДАННЫХ ====================
     function loadData() {
         if (!userId) {
-            statusText = '⚠️ Не удалось определить пользователя';
+            statusText = '⚠️ Пользователь не определён';
             updateUI();
             return;
         }
@@ -344,17 +329,14 @@
             .then(json => {
                 if (json.success && json.data) {
                     const d = json.data;
-
                     if (d.coins !== undefined) {
                         coins = d.coins;
                         localStorage.setItem('destok_coins', coins);
                     }
-
                     if (d.sub_url && d.sub_url !== 'Не куплена') {
                         vpnLink = d.sub_url;
                         localStorage.setItem('destok_vpn_url', vpnLink);
                     }
-
                     if (d.is_active) {
                         statusText = `🟢 Активна до ${d.expire_date || 'скоро'}`;
                     } else if (d.is_banned) {
@@ -363,7 +345,6 @@
                         statusText = '🔴 Не активна';
                     }
                     localStorage.setItem('destok_sub_status', statusText);
-
                     updateUI();
                 }
             })
@@ -374,13 +355,9 @@
             });
     }
 
-    // ============================================================
-    // 5. Обновление UI
-    // ============================================================
     function updateUI() {
         coinsEl.textContent = `${coins.toFixed(1)} DC`;
         linkEl.textContent = vpnLink;
-
         statusEl.textContent = statusText;
         statusEl.className = 'value';
         if (statusText.includes('🟢')) statusEl.classList.add('active');
@@ -389,20 +366,15 @@
         else if (!statusText.includes('Загрузка')) statusEl.classList.add('inactive');
     }
 
-    // ============================================================
-    // 6. Кликер
-    // ============================================================
+    // ==================== КЛИКЕР ====================
     clickerBtn.addEventListener('click', (e) => {
         coins += 0.5;
         localStorage.setItem('destok_coins', coins);
         updateUI();
-
         coinsEl.classList.add('bump');
         setTimeout(() => coinsEl.classList.remove('bump'), 200);
-
         if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
-        // Всплывающее число
         const rect = clickerBtn.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -414,7 +386,6 @@
         clickerBtn.appendChild(el);
         setTimeout(() => el.remove(), 800);
 
-        // Сохраняем на сервер (каждые 5 кликов)
         if (userId && Math.floor(coins * 10) % 5 === 0) {
             fetch(`${API_URL}/api/coins/update`, {
                 method: 'POST',
@@ -424,29 +395,21 @@
         }
     });
 
-    // ============================================================
-    // 7. Покупка тарифа
-    // ============================================================
+    // ==================== ПОКУПКА ====================
     function buyTariff(cost, code) {
         if (!userId) {
             alert('❌ Ошибка: пользователь не определён');
             return;
         }
-
         if (coins < cost) {
             alert('❌ Не хватает Dcoin! Тапай больше ⚡️');
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
             return;
         }
-
         fetch(`${API_URL}/api/tariff/buy`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                user_id: userId,
-                tariff: code,
-                coins_spent: cost
-            })
+            body: JSON.stringify({ user_id: userId, tariff: code, coins_spent: cost })
         })
         .then(res => res.json())
         .then(json => {
@@ -465,9 +428,7 @@
         });
     }
 
-    // ============================================================
-    // 8. Копирование ссылки
-    // ============================================================
+    // ==================== КОПИРОВАНИЕ ====================
     function copyLink() {
         if (!vpnLink || vpnLink === 'Не куплена' || vpnLink === 'Загрузка...') {
             alert('❌ Нет активной ссылки');
@@ -483,9 +444,7 @@
             });
     }
 
-    // ============================================================
-    // 9. Переключение вкладок
-    // ============================================================
+    // ==================== ПЕРЕКЛЮЧЕНИЕ ====================
     function switchTab(id, btn) {
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -494,9 +453,6 @@
         if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 
-    // ============================================================
-    // 10. Загрузка данных при старте
-    // ============================================================
     loadData();
 </script>
 </body>
