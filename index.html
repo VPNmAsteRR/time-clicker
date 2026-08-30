@@ -7,13 +7,14 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #0b0c10;
-            --card-bg: #14161f;
-            --card-border: rgba(255, 255, 255, 0.06);
+            --bg-color: #08090d;
+            --card-bg: rgba(20, 24, 35, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: #8a919e;
-            --accent: #4facfe;
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
         }
 
         * {
@@ -32,6 +33,9 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(0, 242, 254, 0.15), transparent 40%),
+                radial-gradient(circle at 50% 120%, rgba(79, 172, 254, 0.1), transparent 40%);
         }
 
         .app-container {
@@ -58,16 +62,18 @@
         }
 
         .greeting {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 800;
             width: 100%;
             text-align: left;
             margin-bottom: 14px;
+            letter-spacing: -0.5px;
         }
 
         .info-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
             border-radius: 20px;
             padding: 16px;
             width: 100%;
@@ -79,8 +85,9 @@
 
         .info-card-text h3 {
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 4px;
+            color: #fff;
         }
 
         .info-card-text p {
@@ -90,79 +97,111 @@
         }
 
         .info-card-icon {
-            font-size: 36px;
-            background: rgba(79, 172, 254, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
+            font-size: 24px;
+            background: rgba(0, 242, 254, 0.12);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             margin-left: 12px;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
         }
 
         .top-tabs {
             display: flex;
             gap: 16px;
             width: 100%;
-            margin-bottom: 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
+            margin-bottom: 14px;
         }
-        .top-tabs::-webkit-scrollbar { display: none; }
 
         .top-tab {
             font-size: 18px;
-            font-weight: 700;
-            color: var(--text-muted);
+            font-weight: 800;
+            color: var(--text-main);
             background: none;
             border: none;
-            cursor: pointer;
-            transition: color 0.2s;
-            white-space: nowrap;
-        }
-
-        .top-tab.active {
-            color: var(--text-main);
+            letter-spacing: -0.3px;
         }
 
         .input-label {
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-muted);
             width: 100%;
             text-align: left;
             margin-bottom: 8px;
-            font-weight: 500;
+            font-weight: 700;
+            letter-spacing: 0.8px;
         }
 
-        .input-box {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 14px 16px;
+        .balance-card {
+            background: rgba(15, 20, 32, 0.8);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            border-radius: 20px;
+            padding: 16px;
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 16px;
+            box-shadow: inset 0 0 20px rgba(0, 242, 254, 0.05), 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .balance-value {
+            font-size: 32px;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
 
         .main-action-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 20px;
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 24px 20px;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 16px;
+            position: relative;
+        }
+
+        /* АНИМИРОВАННАЯ КНОПКА ТАПА */
+        .clicker-container {
+            position: relative;
+            margin: 25px 0 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Неоновое свечение позади */
+        .clicker-glow {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            filter: blur(28px);
+            opacity: 0.6;
+            animation: pulseGlow 2.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9); opacity: 0.4; }
+            100% { transform: scale(1.15); opacity: 0.75; }
         }
 
         .clicker-circle-ref {
-            width: 150px;
-            height: 150px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             background: var(--accent-gradient);
             display: flex;
@@ -170,29 +209,41 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 35px rgba(79, 172, 254, 0.35);
-            margin: 20px 0;
             position: relative;
-            transition: transform 0.08s ease;
+            z-index: 2;
+            transition: transform 0.08s cubic-bezier(0,0,0.2,1);
             -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Блик глянца */
+        .clicker-circle-ref::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            width: 120px;
+            height: 60px;
+            border-radius: 60px 60px 0 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0));
+            pointer-events: none;
         }
 
         .clicker-circle-ref:active {
-            transform: scale(0.90);
+            transform: scale(0.92);
         }
 
         .btn-primary {
             background: var(--accent-gradient);
-            color: #0b0c10;
+            color: #06080c;
             border: none;
             border-radius: 16px;
             padding: 16px;
             width: 100%;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 15px;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
         }
 
         .tariffs-list {
@@ -205,7 +256,7 @@
         .tariff-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 16px;
             display: flex;
             align-items: center;
@@ -223,17 +274,17 @@
         }
 
         .tariff-btn {
-            background: rgba(79, 172, 254, 0.15);
-            color: var(--accent);
-            border: none;
-            border-radius: 10px;
+            background: rgba(0, 242, 254, 0.12);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 12px;
             padding: 10px 16px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 13px;
             cursor: pointer;
         }
 
-        /* Стиль нижней навигации как на вашем референсе */
+        /* НАВИГАЦИЯ */
         .nav-bar {
             position: fixed;
             bottom: 16px;
@@ -242,15 +293,15 @@
             width: 90%;
             max-width: 400px;
             height: 72px;
-            background: rgba(20, 22, 31, 0.95);
+            background: rgba(15, 18, 26, 0.9);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 8px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.7);
             z-index: 100;
         }
 
@@ -265,7 +316,7 @@
             gap: 3px;
             cursor: pointer;
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
             flex: 1;
             height: 56px;
             border-radius: 28px;
@@ -277,37 +328,55 @@
             width: 22px;
             height: 22px;
             fill: currentColor;
-            transition: fill 0.25s;
+            transition: fill 0.25s, transform 0.2s;
         }
 
-        /* Капсула активного пункта меню (как на скриншоте) */
         .nav-item.active {
-            background: #1a1e29;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: #fff;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.1);
         }
 
         .nav-item.active svg {
-            fill: #4facfe;
+            fill: var(--accent-cyan);
+            transform: translateY(-1px);
         }
 
-        /* Анимация всплывающего плюса */
+        /* АНИМАЦИЯ ЦИФР И ИСКОР */
         .floating-num {
             position: absolute;
-            font-size: 18px;
-            font-weight: 800;
-            color: #00f2fe;
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffffff;
             pointer-events: none;
             user-select: none;
-            animation: floatUpRef 0.7s ease-out forwards;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            animation: floatUpRef 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
             z-index: 10;
         }
 
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px var(--accent-cyan);
+            pointer-events: none;
+            animation: sparkleFade 0.6s ease-out forwards;
+            z-index: 9;
+        }
+
         @keyframes floatUpRef {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -90px) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
+        }
+
+        @keyframes sparkleFade {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -70px) scale(1.3); }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
         }
     </style>
 </head>
@@ -316,30 +385,35 @@
     <div class="app-container">
         <!-- ЭКРАН 1: КЛИКЕР -->
         <div id="screen-clicker" class="screen active">
-            <div class="greeting" id="user-greeting">Привет, друг!</div>
+            <div class="greeting" id="user-greeting">Привет, друг! 👋</div>
 
             <div class="info-card">
                 <div class="info-card-text">
-                    <h3>Надёжность</h3>
-                    <p>Destok VPN — быстрое соединение и безопасный доступ 24/7 :)</p>
+                    <h3>Надёжность и скорость</h3>
+                    <p>Destok VPN — защищённый доступ 24/7</p>
                 </div>
                 <div class="info-card-icon">⚡</div>
             </div>
 
             <div class="top-tabs">
-                <button class="top-tab active">Dcoin кликер</button>
+                <button class="top-tab">Dcoin Кликер</button>
             </div>
 
             <div class="input-label">ТВОЙ БАЛАНС</div>
-            <div class="input-box" style="justify-content: center; background: linear-gradient(135deg, rgba(79,172,254,0.08), rgba(0,242,254,0.03)); border-color: rgba(79,172,254,0.3);">
-                <span id="coins-display" style="font-size: 28px; font-weight: 800; color: #4facfe;">0.0 DC</span>
+            <div class="balance-card">
+                <span style="font-size: 24px;">⚡</span>
+                <span id="coins-display" class="balance-value">0.0 DC</span>
             </div>
 
             <div class="main-action-card">
-                <span style="font-size: 13px; color: var(--text-muted);">Тапай по центру, получай коины</span>
-                <div class="clicker-circle-ref" id="clicker-btn">
-                    <span style="font-size: 22px; font-weight: 800; color: #fff; pointer-events: none;">ТАП</span>
-                    <span style="font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 2px; pointer-events: none;">+0.5 DC</span>
+                <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Тапай по центру, получай коины</span>
+                
+                <div class="clicker-container">
+                    <div class="clicker-glow"></div>
+                    <div class="clicker-circle-ref" id="clicker-btn">
+                        <span style="font-size: 26px; font-weight: 900; color: #fff; pointer-events: none; letter-spacing: 1px;">ТАП</span>
+                        <span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); margin-top: 2px; pointer-events: none;">+0.5 DC</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -349,7 +423,7 @@
             <div class="greeting">Магазин тарифов</div>
 
             <div class="top-tabs">
-                <button class="top-tab active">Обмен Dcoin</button>
+                <button class="top-tab">Обмен Dcoin</button>
             </div>
 
             <div class="input-label">ВЫБЕРИТЕ ПОДПИСКУ VPN</div>
@@ -391,27 +465,27 @@
             <div class="greeting">Личный кабинет</div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Статус подписки</span>
-                <div id="sub-status" style="font-size: 15px; font-weight: 600; color: #ff3b30;">Активна до: 15.09.2026</div>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки</span>
+                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #ff3b30;">Активна до: 15.09.2026</div>
             </div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Ссылка подключения (Happ)</span>
-                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent);">vless://destok-sub-link-example#DestokVpn</div>
-                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 4px;" onclick="copyLink()">Скопировать ссылку</button>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Ссылка подключения (Happ)</span>
+                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent-cyan); font-weight: 600;">vless://destok-sub-link-example#DestokVpn</div>
+                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 6px;" onclick="copyLink()">Скопировать ссылку</button>
             </div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Активированные промокоды</span>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Активированные промокоды</span>
                 <div id="promos-box" style="font-size: 13px; font-weight: 500;">Пока пусто</div>
             </div>
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ С КАПСУЛОЙ -->
+    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab('clicker', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.03-.42 1.98-1.07 2.75z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
             Кликер
         </button>
         <button class="nav-item" onclick="switchTab('tariffs', this)">
@@ -439,11 +513,12 @@
         const vpnLinkEl = document.getElementById('vpn-link');
 
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            userGreeting.textContent = `Привет, ${tg.initDataUnsafe.user.first_name || 'друг'}!`;
+            userGreeting.textContent = `Привет, ${tg.initDataUnsafe.user.first_name || 'друг'}! 👋`;
         }
 
         updateUI();
 
+        // КЛИКЕР С ИСКОРКАМИ
         clickerBtn.addEventListener('click', (e) => {
             coins += 0.5;
             save();
@@ -455,14 +530,30 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
+            // Вылет цифры
             const num = document.createElement('div');
             num.className = 'floating-num';
             num.textContent = '+0.5';
             num.style.left = `${x}px`;
             num.style.top = `${y}px`;
-            
             clickerBtn.appendChild(num);
-            setTimeout(() => num.remove(), 700);
+            setTimeout(() => num.remove(), 750);
+
+            // Искорки вокруг тапа
+            for(let i = 0; i < 5; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${x}px`;
+                sparkle.style.top = `${y}px`;
+                
+                const dx = (Math.random() - 0.5) * 80 + 'px';
+                const dy = (Math.random() - 0.5) * 80 + 'px';
+                sparkle.style.setProperty('--dx', dx);
+                sparkle.style.setProperty('--dy', dy);
+
+                clickerBtn.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 600);
+            }
         });
 
         function buyTariff(cost, code) {
