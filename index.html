@@ -112,22 +112,6 @@
             margin-left: 12px;
         }
 
-        .top-tabs {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-            margin-bottom: 14px;
-        }
-
-        .top-tab {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text-main);
-            background: none;
-            border: none;
-            letter-spacing: -0.3px;
-        }
-
         .input-label {
             font-size: 11px;
             color: var(--text-muted);
@@ -416,14 +400,16 @@
             <div class="greeting">Личный кабинет</div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки (из базы бота)</span>
-                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #ff3b30;">Загрузка...</div>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки</span>
+                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #00f2fe;">Проверьте в боте / профиле</div>
             </div>
 
             <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Основная ссылка подключения</span>
-                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent-cyan); font-weight: 600;">Загрузка...</div>
-                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 6px;" onclick="copyLink()">Скопировать ссылку</button>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Инфо</span>
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+                    Ваши ключи и управление подпиской доступны в боте через кнопку «Мой профиль».
+                </div>
+                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 6px;" onclick="openBotProfile()">Открыть бота</button>
             </div>
         </div>
     </div>
@@ -448,44 +434,14 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Получаем Telegram ID пользователя
-        const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
         const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
-
         document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
 
         let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
-        let vpnUrl = "Не куплена";
-        let subStatusText = "Не активна";
-
         const coinsDisplay = document.getElementById('coins-display');
         const clickerBtn = document.getElementById('clicker-btn');
-        const vpnLinkEl = document.getElementById('vpn-link');
-        const subStatusEl = document.getElementById('sub-status');
 
         updateUI();
-
-        // 🔥 ЗАПРОС К ДАННЫМ ИЗ БАЗЫ БОТА (порт 8000)
-        if (userId) {
-            // Замени IP_ТВОЕГО_СЕРВЕРА на реальный IP, где запущен бот
-            fetch(`http://185.204.53.140:8000/api/user?user_id=${userId}`)
-                .then(res => res.json())
-                .then(res => {
-                    if (res.success && res.data) {
-                        const data = res.data;
-                        if (data.sub_url) {
-                            vpnUrl = data.sub_url;
-                        }
-                        if (data.is_active) {
-                            subStatusText = `Активна до: ${new Date(data.expire_date).toLocaleDateString()}`;
-                        } else {
-                            subStatusText = "Истекла / Не активна";
-                        }
-                        updateUI();
-                    }
-                })
-                .catch(err => console.log("Ошибка загрузки данных из базы бота:", err));
-        }
 
         // Кликер
         clickerBtn.addEventListener('click', (e) => {
@@ -521,7 +477,7 @@
                 
                 if (tg.sendData) {
                     tg.sendData(`buy:${durationCode}`);
-                    alert('Запрос отправлен боту! Проверьте чат.');
+                    alert('Запрос отправлен боту! Закрываем приложение...');
                     tg.close();
                 } else {
                     alert('Успешно куплено!');
@@ -532,22 +488,12 @@
             }
         }
 
-        function copyLink() {
-            if (vpnUrl === "Не куплена") {
-                alert('У вас еще нет активной ссылки.');
-                return;
-            }
-            navigator.clipboard.writeText(vpnUrl).then(() => {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                alert('Ссылка подписки скопирована!');
-            });
+        function openBotProfile() {
+            tg.close();
         }
 
         function updateUI() {
             coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
-            vpnLinkEl.textContent = vpnUrl;
-            subStatusEl.textContent = subStatusText;
-            subStatusEl.style.color = subStatusText.includes("Активна") ? '#00f2fe' : '#ff3b30';
         }
 
         function switchTab(tabId, el) {
