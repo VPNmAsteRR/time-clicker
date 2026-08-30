@@ -71,57 +71,6 @@
             letter-spacing: -0.5px;
         }
 
-        .info-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 16px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .info-card-text h3 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #fff;
-        }
-
-        .info-card-text p {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        .info-card-icon {
-            font-size: 24px;
-            background: rgba(0, 242, 254, 0.12);
-            border: 1px solid rgba(0, 242, 254, 0.25);
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-left: 12px;
-        }
-
-        .input-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            width: 100%;
-            text-align: left;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-        }
-
         .balance-card {
             background: rgba(15, 20, 32, 0.85);
             border: 1px solid rgba(0, 242, 254, 0.25);
@@ -337,15 +286,6 @@
         <div id="screen-clicker" class="screen active">
             <div class="greeting" id="user-greeting">Привет, друг! 👋</div>
 
-            <div class="info-card">
-                <div class="info-card-text">
-                    <h3>Destok VPN Серверы</h3>
-                    <p>Основной и Запасной ноды 24/7</p>
-                </div>
-                <div class="info-card-icon">⚡</div>
-            </div>
-
-            <div class="input-label">ТВОЙ БАЛАНС DCOIN</div>
             <div class="balance-card">
                 <span style="font-size: 24px;">⚡</span>
                 <span id="coins-display" class="balance-value">0.0 DC</span>
@@ -364,55 +304,50 @@
             </div>
         </div>
 
-        <!-- ЭКРАН 2: ТАРИФЫ -->
+        <!-- ЭКРАН 2: ТАРИФЫ (ТЕСТОВЫЙ) -->
         <div id="screen-tariffs" class="screen">
             <div class="greeting">Магазин подписок</div>
 
-            <div class="input-label">ОБМЕН DCOIN НА VPN ДОСТУП</div>
+            <div class="input-label" style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: left; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.8px;">ОБМЕН DCOIN НА VPN ДОСТУП</div>
             
             <div class="tariffs-list">
+                <!-- ТЕСТОВЫЙ ТАРИФ ЗА 10 МОНЕТ -->
+                <div class="tariff-card" style="border-color: rgba(0, 242, 254, 0.4);">
+                    <div class="tariff-info">
+                        <h4>🧪 ТЕСТ: 1 день VPN</h4>
+                        <p>Цена: 10 Dcoin (тестовый)</p>
+                    </div>
+                    <button class="tariff-btn" onclick="buyTariff(10, 'TEST')">Купить</button>
+                </div>
+                
                 <div class="tariff-card">
                     <div class="tariff-info">
                         <h4>3 дня VPN</h4>
                         <p>Цена: 1 000 Dcoin</p>
                     </div>
-                    <button class="tariff-btn" onclick="buyTariff(1000, '3D')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(1000, '3D')">Купить</button>
                 </div>
+                
                 <div class="tariff-card">
                     <div class="tariff-info">
                         <h4>7 дней VPN</h4>
                         <p>Цена: 2 200 Dcoin</p>
                     </div>
-                    <button class="tariff-btn" onclick="buyTariff(2200, '7D')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(2200, '7D')">Купить</button>
                 </div>
+                
                 <div class="tariff-card">
                     <div class="tariff-info">
                         <h4>30 дней VPN</h4>
                         <p>Цена: 7 500 Dcoin</p>
                     </div>
-                    <button class="tariff-btn" onclick="buyTariff(7500, '30D')">Обменять</button>
+                    <button class="tariff-btn" onclick="buyTariff(7500, '30D')">Купить</button>
                 </div>
-            </div>
-        </div>
-
-        <!-- ЭКРАН 3: ПРОФИЛЬ -->
-        <div id="screen-profile" class="screen">
-            <div class="greeting">Личный кабинет</div>
-
-            <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Статус подписки</span>
-                <div id="sub-status" style="font-size: 15px; font-weight: 700; color: #ff3b30;">Загрузка данных...</div>
-            </div>
-
-            <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Основная ссылка подключения</span>
-                <div id="vpn-link" style="font-size: 12px; word-break: break-all; color: var(--accent-cyan); font-weight: 600;">Загрузка...</div>
-                <button class="btn-primary" style="padding: 12px; font-size: 13px; margin-top: 6px;" onclick="copyLink()">Скопировать ссылку</button>
             </div>
         </div>
     </div>
 
-    <!-- НАВБАР -->
+    <!-- НАВБАР (только Кликер и Тарифы) -->
     <nav class="nav-bar">
         <button class="nav-item active" onclick="switchTab('clicker', this)">
             <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
@@ -422,15 +357,14 @@
             <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
             Тарифы
         </button>
-        <button class="nav-item" onclick="switchTab('profile', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Профиль
-        </button>
     </nav>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+
+        // ========== ИСПОЛЬЗУЕМ ОТНОСИТЕЛЬНЫЙ ПУТЬ (БЕЗ ДОМЕНА) ==========
+        const API_URL = '';
 
         const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
         const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
@@ -438,49 +372,29 @@
         document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
 
         let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
-        let vpnUrl = localStorage.getItem('destok_vpn_url') || "Не куплена";
-        let subStatusText = localStorage.getItem('destok_sub_status') || "Не активна";
 
         const coinsDisplay = document.getElementById('coins-display');
         const clickerBtn = document.getElementById('clicker-btn');
-        const vpnLinkEl = document.getElementById('vpn-link');
-        const subStatusEl = document.getElementById('sub-status');
 
         updateUI();
 
-        // Попытка получить данные из базы бота через API (если бэкенд доступен)
+        // ========== ПОЛУЧАЕМ БАЛАНС ИЗ БОТА ==========
         if (userId) {
-            // ВАЖНО: Если у тебя сайт на HTTPS, а бот на HTTP, браузер может блокировать fetch.
-            // Поэтому мы также даем возможность боту передавать данные или используем запасной вариант.
-            fetch(`http://185.204.53.140:8000/api/user?user_id=${userId}`)
+            fetch(`/api/user?user_id=${userId}`)
                 .then(res => res.json())
                 .then(res => {
-                    if (res.success && res.data) {
-                        const data = res.data;
-                        if (data.sub_url && data.sub_url !== "Не куплена") {
-                            vpnUrl = data.sub_url;
-                            localStorage.setItem('destok_vpn_url', vpnUrl);
-                        }
-                        if (data.is_active) {
-                            subStatusText = `Активна до: ${new Date(data.expire_date).toLocaleDateString()}`;
-                        } else {
-                            subStatusText = "Истекла / Не активна";
-                        }
-                        localStorage.setItem('destok_sub_status', subStatusText);
+                    if (res.success && res.data && res.data.coins !== undefined) {
+                        coins = res.data.coins;
+                        localStorage.setItem('destok_coins', coins);
                         updateUI();
                     }
                 })
                 .catch(err => {
-                    console.log("API недоступно из-за политики безопасности браузера, используем кэш/бот");
-                    // Если fetch заблокирован браузером (Mixed Content), подтягиваем сохраненное или выводим подсказку
-                    if (vpnUrl === "Не куплена") {
-                        subStatusText = "Проверьте статус в боте (/profile)";
-                        updateUI();
-                    }
+                    console.log("⚠️ API недоступно, используем локальный баланс:", err);
                 });
         }
 
-        // Кликер
+        // ========== КЛИКЕР ==========
         clickerBtn.addEventListener('click', (e) => {
             coins += 0.5;
             localStorage.setItem('destok_coins', coins);
@@ -502,49 +416,61 @@
             num.style.top = `${y}px`;
             clickerBtn.appendChild(num);
             setTimeout(() => num.remove(), 750);
+
+            // Сохраняем баланс на сервере (каждые 5 кликов)
+            if (userId && Math.floor(coins * 10) % 5 === 0) {
+                fetch(`/api/coins/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, coins: coins })
+                }).catch(err => console.log("Не удалось сохранить баланс:", err));
+            }
         });
 
+        // ========== ПОКУПКА ТАРИФА ==========
         function buyTariff(cost, durationCode) {
-            if (coins >= cost) {
-                coins -= cost;
-                localStorage.setItem('destok_coins', coins);
-                updateUI();
-                
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                
-                if (tg.sendData) {
-                    tg.sendData(`buy:${durationCode}`);
-                    alert('Запрос отправлен боту! Проверьте чат с ботом.');
-                    tg.close();
-                } else {
-                    alert('Успешно куплено!');
-                }
-            } else {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-                alert('Не хватает Dcoin на балансе! Тапай больше ⚡️');
-            }
-        }
-
-        function copyLink() {
-            if (vpnUrl === "Не куплена") {
-                alert('У вас еще нет активной ссылки. Купите тариф или возьмите ее в боте /profile');
+            if (!userId) {
+                alert('❌ Ошибка: не удалось определить пользователя');
                 return;
             }
-            navigator.clipboard.writeText(vpnUrl).then(() => {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                alert('Ссылка подписки скопирована!');
-            }).catch(() => {
-                prompt("Скопируйте вашу ссылку вручную:", vpnUrl);
-            });
+            
+            if (coins >= cost) {
+                fetch(`/api/tariff/buy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        tariff: durationCode,
+                        coins_spent: cost
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        coins = res.new_balance;
+                        localStorage.setItem('destok_coins', coins);
+                        updateUI();
+                        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                        alert('✅ Заказ отправлен! Бот обработает его в ближайшее время.');
+                    } else {
+                        alert('❌ ' + (res.error || 'Ошибка'));
+                    }
+                })
+                .catch(() => {
+                    alert('❌ Ошибка соединения с сервером. Попробуйте позже.');
+                });
+            } else {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                alert('❌ Не хватает Dcoin! Тапай больше ⚡️');
+            }
         }
 
+        // ========== ОБНОВЛЕНИЕ UI ==========
         function updateUI() {
             coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
-            vpnLinkEl.textContent = vpnUrl;
-            subStatusEl.textContent = subStatusText;
-            subStatusEl.style.color = subStatusText.includes("Активна") ? '#00f2fe' : '#ff3b30';
         }
 
+        // ========== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ==========
         function switchTab(tabId, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
