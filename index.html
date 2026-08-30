@@ -13,588 +13,269 @@
             --text-main: #ffffff;
             --text-muted: #8a919e;
             --accent-cyan: #00f2fe;
-            --accent-blue: #4facfe;
             --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 50% -20%, rgba(0, 242, 254, 0.15), transparent 40%),
-                radial-gradient(circle at 50% 120%, rgba(79, 172, 254, 0.1), transparent 40%);
-        }
-
-        .app-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            padding-bottom: 110px;
-            scroll-behavior: smooth;
-        }
-
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .screen.active {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .greeting {
-            font-size: 24px;
-            font-weight: 800;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 14px;
-            letter-spacing: -0.5px;
-        }
-
-        .info-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 16px;
-            width: 100%;
-            margin-bottom: 12px;
-        }
-
-        .info-card .label {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .info-card .value {
-            font-size: 14px;
-            font-weight: 600;
-            word-break: break-all;
-        }
-
-        .info-card .value.active {
-            color: #00f2fe;
-        }
-
-        .info-card .value.inactive {
-            color: #ff3b30;
-        }
-
-        .balance-card {
-            background: rgba(15, 20, 32, 0.85);
-            border: 1px solid rgba(0, 242, 254, 0.25);
-            border-radius: 20px;
-            padding: 16px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .balance-value {
-            font-size: 32px;
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .balance-value.bump {
-            transform: scale(1.12);
-        }
-
-        .main-action-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 24px;
-            padding: 24px 20px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        .clicker-container {
-            position: relative;
-            margin: 25px 0 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .clicker-glow {
-            position: absolute;
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: var(--accent-gradient);
-            filter: blur(32px);
-            opacity: 0.55;
-            animation: pulseGlow 3s infinite alternate ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(0.9); opacity: 0.35; }
-            100% { transform: scale(1.2); opacity: 0.7; }
-        }
-
-        .clicker-circle-ref {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            background: var(--accent-gradient);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            z-index: 2;
-            transition: transform 0.15s cubic-bezier(0.3, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
-        }
-
-        .clicker-circle-ref:active {
-            transform: scale(0.92);
-        }
-
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: #06080c;
-            border: none;
-            border-radius: 16px;
-            padding: 16px;
-            width: 100%;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
-            margin-top: 8px;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            padding: 16px;
-            width: 100%;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .tariffs-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .tariff-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .tariff-card.test {
-            border-color: rgba(0, 242, 254, 0.4);
-        }
-
-        .tariff-info h4 {
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .tariff-info p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .tariff-btn {
-            background: rgba(0, 242, 254, 0.12);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            height: 72px;
-            background: rgba(12, 16, 24, 0.8);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 36px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 8px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            z-index: 100;
-        }
-
-        .nav-item {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            flex: 1;
-            height: 56px;
-            border-radius: 28px;
-            transition: all 0.35s ease;
-        }
-
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-item.active {
-            background: rgba(0, 242, 254, 0.1);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            color: #fff;
-        }
-
-        .nav-item.active svg {
-            fill: var(--accent-cyan);
-        }
-
-        .floating-num {
-            position: absolute;
-            font-size: 20px;
-            font-weight: 900;
-            color: #ffffff;
-            pointer-events: none;
-            animation: floatUpRef 0.75s ease-out forwards;
-            text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
-            z-index: 10;
-        }
-
-        @keyframes floatUpRef {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% -20%, rgba(0, 242, 254, 0.15), transparent 40%), radial-gradient(circle at 50% 120%, rgba(79, 172, 254, 0.1), transparent 40%); }
+        .app-container { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 110px; scroll-behavior: smooth; }
+        .screen { display: none; flex-direction: column; align-items: center; opacity: 0; transform: translateY(10px); transition: opacity 0.4s, transform 0.4s; }
+        .screen.active { display: flex; opacity: 1; transform: translateY(0); }
+        .greeting { font-size: 24px; font-weight: 800; width: 100%; text-align: left; margin-bottom: 14px; }
+        .info-card { background: rgba(20, 24, 35, 0.75); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(16px); border-radius: 20px; padding: 16px; width: 100%; margin-bottom: 12px; }
+        .info-card .label { font-size: 11px; color: #8a919e; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+        .info-card .value { font-size: 14px; font-weight: 600; word-break: break-all; }
+        .info-card .value.active { color: #00f2fe; }
+        .info-card .value.inactive { color: #ff3b30; }
+        .balance-card { background: rgba(15, 20, 32, 0.85); border: 1px solid rgba(0, 242, 254, 0.25); border-radius: 20px; padding: 16px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; }
+        .balance-value { font-size: 32px; font-weight: 900; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: transform 0.25s; }
+        .balance-value.bump { transform: scale(1.12); }
+        .main-action-card { background: rgba(20, 24, 35, 0.75); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(16px); border-radius: 24px; padding: 24px 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .clicker-container { position: relative; margin: 25px 0 15px 0; display: flex; justify-content: center; align-items: center; }
+        .clicker-glow { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: var(--accent-gradient); filter: blur(32px); opacity: 0.55; animation: pulseGlow 3s infinite alternate; }
+        @keyframes pulseGlow { 0% { transform: scale(0.9); opacity: 0.35; } 100% { transform: scale(1.2); opacity: 0.7; } }
+        .clicker-circle-ref { width: 160px; height: 160px; border-radius: 50%; background: var(--accent-gradient); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; z-index: 2; transition: transform 0.15s; box-shadow: 0 10px 30px rgba(0, 242, 254, 0.4), inset 0 2px 6px rgba(255,255,255,0.6); }
+        .clicker-circle-ref:active { transform: scale(0.92); }
+        .btn-secondary { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 16px; width: 100%; font-weight: 700; font-size: 14px; cursor: pointer; text-align: center; margin-top: 8px; }
+        .tariffs-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .tariff-card { background: rgba(20, 24, 35, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .tariff-card.test { border-color: rgba(0, 242, 254, 0.4); }
+        .tariff-info h4 { font-size: 15px; margin-bottom: 4px; }
+        .tariff-info p { font-size: 12px; color: #8a919e; }
+        .tariff-btn { background: rgba(0, 242, 254, 0.12); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 12px; padding: 10px 16px; font-weight: 700; font-size: 13px; cursor: pointer; }
+        .nav-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 72px; background: rgba(12, 16, 24, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.12); border-radius: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 100; }
+        .nav-item { background: transparent; border: 1px solid transparent; color: #8a919e; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; font-size: 11px; font-weight: 600; flex: 1; height: 56px; border-radius: 28px; transition: all 0.35s; }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+        .nav-item.active { background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); color: #fff; }
+        .nav-item.active svg { fill: #00f2fe; }
+        .floating-num { position: absolute; font-size: 20px; font-weight: 900; color: #fff; pointer-events: none; animation: floatUpRef 0.75s ease-out forwards; text-shadow: 0 0 12px rgba(0, 242, 254, 0.8); z-index: 10; }
+        @keyframes floatUpRef { 0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 0; transform: translate(-50%, -120px) scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- ЭКРАН 1: КЛИКЕР -->
-        <div id="screen-clicker" class="screen active">
-            <div class="greeting" id="user-greeting">Привет, друг! 👋</div>
-
-            <div class="balance-card">
-                <span style="font-size: 24px;">⚡</span>
-                <span id="coins-display" class="balance-value">0.0 DC</span>
-            </div>
-
-            <div class="info-card">
-                <div class="label">Статус подписки</div>
-                <div class="value" id="sub-status">Загрузка...</div>
-            </div>
-
-            <div class="info-card">
-                <div class="label">Твоя ссылка</div>
-                <div class="value" id="vpn-link" style="font-size: 11px; color: var(--accent-cyan);">Загрузка...</div>
-                <button class="btn-secondary" onclick="copyLink()">📋 Скопировать ссылку</button>
-            </div>
-
-            <div class="main-action-card">
-                <span style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Тапай по центру, зарабатывай Dcoin</span>
-                
-                <div class="clicker-container">
-                    <div class="clicker-glow"></div>
-                    <div class="clicker-circle-ref" id="clicker-btn">
-                        <span style="font-size: 26px; font-weight: 900; color: #fff;">ТАП</span>
-                        <span style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); margin-top: 2px;">+0.5 DC</span>
-                    </div>
-                </div>
-            </div>
+<div class="app-container">
+    <!-- КЛИКЕР -->
+    <div id="screen-clicker" class="screen active">
+        <div class="greeting" id="user-greeting">Привет, друг! 👋</div>
+        <div class="balance-card">
+            <span style="font-size:24px;">⚡</span>
+            <span id="coins-display" class="balance-value">0.0 DC</span>
         </div>
-
-        <!-- ЭКРАН 2: ТАРИФЫ -->
-        <div id="screen-tariffs" class="screen">
-            <div class="greeting">Магазин подписок</div>
-
-            <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: left; margin-bottom: 8px; font-weight: 700; letter-spacing: 0.8px;">ОБМЕН DCOIN НА VPN ДОСТУП</div>
-            
-            <div class="tariffs-list">
-                <!-- ТЕСТОВЫЙ ТАРИФ ЗА 10 МОНЕТ -->
-                <div class="tariff-card test">
-                    <div class="tariff-info">
-                        <h4>🧪 ТЕСТ: 1 день VPN</h4>
-                        <p>Цена: 10 Dcoin (тестовый)</p>
-                    </div>
-                    <button class="tariff-btn" onclick="buyTariff(10, 'TEST')">Купить</button>
-                </div>
-                
-                <div class="tariff-card">
-                    <div class="tariff-info">
-                        <h4>3 дня VPN</h4>
-                        <p>Цена: 1 000 Dcoin</p>
-                    </div>
-                    <button class="tariff-btn" onclick="buyTariff(1000, '3D')">Купить</button>
-                </div>
-                
-                <div class="tariff-card">
-                    <div class="tariff-info">
-                        <h4>7 дней VPN</h4>
-                        <p>Цена: 2 200 Dcoin</p>
-                    </div>
-                    <button class="tariff-btn" onclick="buyTariff(2200, '7D')">Купить</button>
-                </div>
-                
-                <div class="tariff-card">
-                    <div class="tariff-info">
-                        <h4>30 дней VPN</h4>
-                        <p>Цена: 7 500 Dcoin</p>
-                    </div>
-                    <button class="tariff-btn" onclick="buyTariff(7500, '30D')">Купить</button>
+        <div class="info-card">
+            <div class="label">Статус подписки</div>
+            <div class="value" id="sub-status">Загрузка...</div>
+        </div>
+        <div class="info-card">
+            <div class="label">Твоя ссылка</div>
+            <div class="value" id="vpn-link" style="font-size:11px;color:#00f2fe;">Загрузка...</div>
+            <button class="btn-secondary" onclick="copyLink()">📋 Скопировать ссылку</button>
+        </div>
+        <div class="main-action-card">
+            <span style="font-size:13px;color:#8a919e;font-weight:500;">Тапай по центру, зарабатывай Dcoin</span>
+            <div class="clicker-container">
+                <div class="clicker-glow"></div>
+                <div class="clicker-circle-ref" id="clicker-btn">
+                    <span style="font-size:26px;font-weight:900;color:#fff;">ТАП</span>
+                    <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.9);margin-top:2px;">+0.5 DC</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- НАВБАР -->
-    <nav class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('clicker', this)">
-            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-            Кликер
-        </button>
-        <button class="nav-item" onclick="switchTab('tariffs', this)">
-            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            Тарифы
-        </button>
-    </nav>
+    <!-- ТАРИФЫ -->
+    <div id="screen-tariffs" class="screen">
+        <div class="greeting">Магазин подписок</div>
+        <div style="font-size:11px;color:#8a919e;width:100%;text-align:left;margin-bottom:8px;font-weight:700;letter-spacing:0.8px;">ОБМЕН DCOIN НА VPN ДОСТУП</div>
+        <div class="tariffs-list">
+            <div class="tariff-card test">
+                <div class="tariff-info">
+                    <h4>🧪 ТЕСТ: 1 день VPN</h4>
+                    <p>Цена: 10 Dcoin (тестовый)</p>
+                </div>
+                <button class="tariff-btn" onclick="buyTariff(10, 'TEST')">Купить</button>
+            </div>
+            <div class="tariff-card">
+                <div class="tariff-info">
+                    <h4>3 дня VPN</h4>
+                    <p>Цена: 1 000 Dcoin</p>
+                </div>
+                <button class="tariff-btn" onclick="buyTariff(1000, '3D')">Купить</button>
+            </div>
+            <div class="tariff-card">
+                <div class="tariff-info">
+                    <h4>7 дней VPN</h4>
+                    <p>Цена: 2 200 Dcoin</p>
+                </div>
+                <button class="tariff-btn" onclick="buyTariff(2200, '7D')">Купить</button>
+            </div>
+            <div class="tariff-card">
+                <div class="tariff-info">
+                    <h4>30 дней VPN</h4>
+                    <p>Цена: 7 500 Dcoin</p>
+                </div>
+                <button class="tariff-btn" onclick="buyTariff(7500, '30D')">Купить</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+<!-- НАВБАР -->
+<nav class="nav-bar">
+    <button class="nav-item active" onclick="switchTab('clicker', this)">
+        <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+        Кликер
+    </button>
+    <button class="nav-item" onclick="switchTab('tariffs', this)">
+        <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        Тарифы
+    </button>
+</nav>
 
-        const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
-        const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
+    // ========== API НА VPS (HTTP) ==========
+    const API_URL = 'http://185.204.53.140';
 
-        let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
-        let vpnUrl = localStorage.getItem('destok_vpn_url') || "Не куплена";
-        let subStatusText = localStorage.getItem('destok_sub_status') || "Загрузка...";
+    const userId = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+    const firstName = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : "друг";
 
-        const coinsDisplay = document.getElementById('coins-display');
-        const clickerBtn = document.getElementById('clicker-btn');
-        const vpnLinkEl = document.getElementById('vpn-link');
-        const subStatusEl = document.getElementById('sub-status');
+    document.getElementById('user-greeting').textContent = `Привет, ${firstName}! 👋`;
 
-        updateUI();
+    let coins = parseFloat(localStorage.getItem('destok_coins')) || 0.0;
+    let vpnUrl = localStorage.getItem('destok_vpn_url') || "Не куплена";
+    let subStatusText = localStorage.getItem('destok_sub_status') || "Загрузка...";
 
-        // ========== ПОЛУЧАЕМ ДАННЫЕ ИЗ БОТА ==========
-        if (userId) {
-            fetch(`/api/user?user_id=${userId}`)
-                .then(res => res.json())
-                .then(res => {
-                    if (res.success && res.data) {
-                        const data = res.data;
-                        
-                        // Ссылка
-                        if (data.sub_url && data.sub_url !== "Не куплена") {
-                            vpnUrl = data.sub_url;
-                            localStorage.setItem('destok_vpn_url', vpnUrl);
-                        }
-                        
-                        // Статус подписки
-                        if (data.is_active) {
-                            subStatusText = `🟢 Активна до: ${data.expire_date || 'скоро'}`;
-                        } else if (data.is_banned) {
-                            subStatusText = "⛔ Заблокирован";
-                        } else {
-                            subStatusText = "🔴 Истекла / Не активна";
-                        }
-                        localStorage.setItem('destok_sub_status', subStatusText);
-                        
-                        // Монеты
-                        if (data.coins !== undefined) {
-                            coins = data.coins;
-                            localStorage.setItem('destok_coins', coins);
-                        }
-                        
-                        updateUI();
+    const coinsDisplay = document.getElementById('coins-display');
+    const clickerBtn = document.getElementById('clicker-btn');
+    const vpnLinkEl = document.getElementById('vpn-link');
+    const subStatusEl = document.getElementById('sub-status');
+
+    updateUI();
+
+    // ========== ПОЛУЧАЕМ ДАННЫЕ ==========
+    if (userId) {
+        fetch(`${API_URL}/api/user?user_id=${userId}`)
+            .then(res => res.json())
+            .then(res => {
+                if (res.success && res.data) {
+                    const data = res.data;
+                    if (data.sub_url && data.sub_url !== "Не куплена") {
+                        vpnUrl = data.sub_url;
+                        localStorage.setItem('destok_vpn_url', vpnUrl);
                     }
-                })
-                .catch(err => {
-                    console.log("⚠️ API недоступно:", err);
-                    subStatusText = "🔄 Проверьте статус в боте (/profile)";
-                    updateUI();
-                });
-        }
-
-        // ========== КЛИКЕР ==========
-        clickerBtn.addEventListener('click', (e) => {
-            coins += 0.5;
-            localStorage.setItem('destok_coins', coins);
-            updateUI();
-
-            coinsDisplay.classList.add('bump');
-            setTimeout(() => coinsDisplay.classList.remove('bump'), 200);
-
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-            const rect = clickerBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const num = document.createElement('div');
-            num.className = 'floating-num';
-            num.textContent = '+0.5';
-            num.style.left = `${x}px`;
-            num.style.top = `${y}px`;
-            clickerBtn.appendChild(num);
-            setTimeout(() => num.remove(), 750);
-
-            // Сохраняем баланс на сервере
-            if (userId && Math.floor(coins * 10) % 5 === 0) {
-                fetch(`/api/coins/update`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: userId, coins: coins })
-                }).catch(err => console.log("Не удалось сохранить баланс:", err));
-            }
-        });
-
-        // ========== ПОКУПКА ТАРИФА ==========
-        function buyTariff(cost, durationCode) {
-            if (!userId) {
-                alert('❌ Ошибка: не удалось определить пользователя');
-                return;
-            }
-            
-            if (coins >= cost) {
-                fetch(`/api/tariff/buy`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        tariff: durationCode,
-                        coins_spent: cost
-                    })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.success) {
-                        coins = res.new_balance;
-                        localStorage.setItem('destok_coins', coins);
-                        updateUI();
-                        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                        alert('✅ Заказ отправлен! Бот обработает его в ближайшее время.');
+                    if (data.is_active) {
+                        subStatusText = `🟢 Активна до: ${data.expire_date || 'скоро'}`;
+                    } else if (data.is_banned) {
+                        subStatusText = "⛔ Заблокирован";
                     } else {
-                        alert('❌ ' + (res.error || 'Ошибка'));
+                        subStatusText = "🔴 Истекла / Не активна";
                     }
-                })
-                .catch(() => {
-                    alert('❌ Ошибка соединения с сервером. Попробуйте позже.');
-                });
-            } else {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-                alert('❌ Не хватает Dcoin! Тапай больше ⚡️');
-            }
-        }
-
-        // ========== КОПИРОВАНИЕ ССЫЛКИ ==========
-        function copyLink() {
-            if (vpnUrl === "Не куплена" || vpnUrl === "Загрузка...") {
-                alert('❌ У вас еще нет активной ссылки. Купите тариф или проверьте статус в боте.');
-                return;
-            }
-            navigator.clipboard.writeText(vpnUrl).then(() => {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                alert('✅ Ссылка подписки скопирована!');
-            }).catch(() => {
-                prompt("Скопируйте вашу ссылку вручную:", vpnUrl);
+                    localStorage.setItem('destok_sub_status', subStatusText);
+                    if (data.coins !== undefined) {
+                        coins = data.coins;
+                        localStorage.setItem('destok_coins', coins);
+                    }
+                    updateUI();
+                }
+            })
+            .catch(() => {
+                subStatusText = "🔄 Проверьте статус в боте (/profile)";
+                updateUI();
             });
+    }
+
+    // ========== КЛИКЕР ==========
+    clickerBtn.addEventListener('click', (e) => {
+        coins += 0.5;
+        localStorage.setItem('destok_coins', coins);
+        updateUI();
+        coinsDisplay.classList.add('bump');
+        setTimeout(() => coinsDisplay.classList.remove('bump'), 200);
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        const rect = clickerBtn.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const num = document.createElement('div');
+        num.className = 'floating-num';
+        num.textContent = '+0.5';
+        num.style.left = `${x}px`;
+        num.style.top = `${y}px`;
+        clickerBtn.appendChild(num);
+        setTimeout(() => num.remove(), 750);
+        if (userId && Math.floor(coins * 10) % 5 === 0) {
+            fetch(`${API_URL}/api/coins/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, coins: coins })
+            }).catch(() => {});
         }
+    });
 
-        // ========== ОБНОВЛЕНИЕ UI ==========
-        function updateUI() {
-            coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
-            vpnLinkEl.textContent = vpnUrl;
-            subStatusEl.textContent = subStatusText;
-            
-            if (subStatusText.includes('🟢')) {
-                subStatusEl.style.color = '#00f2fe';
-            } else if (subStatusText.includes('⛔')) {
-                subStatusEl.style.color = '#ff3b30';
-            } else if (subStatusText.includes('🔄')) {
-                subStatusEl.style.color = '#ff9500';
-            } else {
-                subStatusEl.style.color = '#ff3b30';
-            }
+    // ========== ПОКУПКА ==========
+    function buyTariff(cost, durationCode) {
+        if (!userId) { alert('❌ Ошибка: не удалось определить пользователя'); return; }
+        if (coins >= cost) {
+            fetch(`${API_URL}/api/tariff/buy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, tariff: durationCode, coins_spent: cost })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    coins = res.new_balance;
+                    localStorage.setItem('destok_coins', coins);
+                    updateUI();
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                    alert('✅ Заказ отправлен! Бот обработает его в ближайшее время.');
+                } else {
+                    alert('❌ ' + (res.error || 'Ошибка'));
+                }
+            })
+            .catch(() => {
+                alert('❌ Ошибка соединения с сервером. Попробуйте позже.');
+            });
+        } else {
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+            alert('❌ Не хватает Dcoin! Тапай больше ⚡️');
         }
+    }
 
-        // ========== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ==========
-        function switchTab(tabId, el) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            document.getElementById(`screen-${tabId}`).classList.add('active');
-            el.classList.add('active');
-
-            if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    // ========== КОПИРОВАНИЕ ==========
+    function copyLink() {
+        if (vpnUrl === "Не куплена" || vpnUrl === "Загрузка...") {
+            alert('❌ У вас еще нет активной ссылки.');
+            return;
         }
-    </script>
+        navigator.clipboard.writeText(vpnUrl).then(() => {
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            alert('✅ Ссылка подписки скопирована!');
+        }).catch(() => {
+            prompt("Скопируйте ссылку вручную:", vpnUrl);
+        });
+    }
+
+    // ========== ОБНОВЛЕНИЕ UI ==========
+    function updateUI() {
+        coinsDisplay.textContent = `${coins.toFixed(1)} DC`;
+        vpnLinkEl.textContent = vpnUrl;
+        subStatusEl.textContent = subStatusText;
+        if (subStatusText.includes('🟢')) subStatusEl.style.color = '#00f2fe';
+        else if (subStatusText.includes('⛔')) subStatusEl.style.color = '#ff3b30';
+        else if (subStatusText.includes('🔄')) subStatusEl.style.color = '#ff9500';
+        else subStatusEl.style.color = '#ff3b30';
+    }
+
+    // ========== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ==========
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(`screen-${tabId}`).classList.add('active');
+        el.classList.add('active');
+        if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+    }
+</script>
 </body>
 </html>
