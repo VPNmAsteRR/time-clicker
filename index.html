@@ -468,7 +468,7 @@
         // 🔥 ЗАПРОС К ДАННЫМ ИЗ БАЗЫ БОТА (порт 8000)
         if (userId) {
             // Замени IP_ТВОЕГО_СЕРВЕРА на реальный IP, где запущен бот
-            fetch(`http://IP_ТВОЕГО_СЕРВЕРА:8000/api/user?user_id=${userId}`)
+            fetch(`http://185.204.53.140:8000/api/user?user_id=${userId}`)
                 .then(res => res.json())
                 .then(res => {
                     if (res.success && res.data) {
